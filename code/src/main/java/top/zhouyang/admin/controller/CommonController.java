@@ -3,6 +3,8 @@ package top.zhouyang.admin.controller;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,7 @@ public class CommonController {
      * @param file 文件
      * @return 是否成功
      */
+    @PostMapping("/upload")
     public AjaxResult upload(MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
 
@@ -44,12 +47,14 @@ public class CommonController {
      * @param file 头像文件
      * @return 是否成功
      */
+    @PostMapping("/upload/avatar")
     public AjaxResult uploadAvatar(MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
             Map map = threadLocalConfig.get();
             Object username = map.get("username");
-            fileUtils.uploadFile(is, "/avatar", username.toString());
-            return AjaxResult.success("上传成功!");
+            String filePath = fileUtils.uploadFile(is, "avatar", username.toString());
+            filePath = filePath.replace(fileUtils.profile, "");
+            return AjaxResult.success("上传成功!", filePath);
         } catch (IOException e) {
             log.error("上传头像时发生异常,异常信息: {}", e.getMessage());
             return AjaxResult.error("上传失败");
