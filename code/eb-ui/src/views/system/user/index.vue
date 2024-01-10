@@ -1,16 +1,6 @@
 <template>
   <div class="app-container">
     <el-row>
-      <!-- 部门树     -->
-      <el-col :span="4">
-        <el-tree
-          :data="departmentTreeData"
-          :props="defaultProps"
-          @node-click="handleNodeClick"
-          default-expand-all
-          :expand-on-click-node="false"
-        ></el-tree>
-      </el-col>
       <!-- 用户信息     -->
       <el-col :span="20">
         <el-row>
@@ -42,15 +32,8 @@
 
         <el-row>
           <el-table v-loading="loading" :data="userList" border style="width: 100%">
-            <el-table-column label="头像" align="center" prop="avatar" show-overflow-tooltip min-width="120">
-              <template slot-scope="scope">
-                <img :src="scope.row.avatar" style="width: 50px;height: 50px;border-radius: 5px;"/>
-              </template>
-            </el-table-column>
             <el-table-column label="用户名" align="center" prop="username" show-overflow-tooltip min-width="120"/>
             <el-table-column label="姓名" align="center" prop="realName" show-overflow-tooltip min-width="120"/>
-            <el-table-column label="所属部门名称" align="center" prop="departmentName" show-overflow-tooltip
-                             min-width="180"/>
             <el-table-column label="电话" align="center" prop="phone" show-overflow-tooltip min-width="120"/>
             <el-table-column label="邮箱" align="center" prop="email" show-overflow-tooltip min-width="120"/>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right"
@@ -96,11 +79,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="所属部门" prop="departmentId">
-              <tree-select :key="treeSelectKey" :props="defaultProps" :options="departmentTreeData"
-                           :value="form.departmentId ? form.departmentId : null"
-                           @getValue="getParentDepartmentId($event)"></tree-select>
-            </el-form-item>
+
           </el-col>
           <el-col :span="12">
             <el-form-item label="姓名" prop="realName">
@@ -132,21 +111,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="头像" prop="avatar">
-              <el-upload
-                ref="avatarUpload"
-                class="avatar-uploader"
-                :action="baseUrl+'/common/upload/avatar/'+ Date.now() + '-' + Math.floor((Math.random() * 9000) + 1000)"
-                :multiple="false"
-                :show-file-list="false"
-                accept=".jpg,.png,.jpeg"
-                :limit="1"
-                :headers="{'Authorization': 'Bearer ' + getToken()}"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="form.avatar" :src="avatarBase64Data" class="avatar"
-                     alt="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+
             </el-form-item>
           </el-col>
         </el-row>
@@ -195,7 +160,6 @@ import {
   updateEbSysUser
 } from "@/api/system/user"
 import TreeSelect from "@/components/TreeSelect/index.vue"
-import {getToken} from "@/utils/auth"
 import {getImage} from "@/api/common";
 import Password from 'vue-password-strength-meter'
 import {assignUserRole} from "@/api/system/role";
@@ -208,13 +172,8 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_API,
+
       userId: null,
-      defaultProps: {
-        value: "id",
-        label: "department",
-        children: "children"
-      },
       parentList: [],
       userList: [],
       total: 0,
@@ -259,7 +218,6 @@ export default {
           {required: true, message: "性别不能为空", trigger: "blur"}
         ]
       },
-      avatarBase64Data: null,
       treeSelectKey: Date.now(),
       pwdScore: null,
       pwdFeedback: {
@@ -271,20 +229,12 @@ export default {
     };
   },
   created() {
-    this.getParentList()
     this.getList()
   },
   computed: {
-    departmentTreeData() {
-      return this.parentList.filter(father => {
-        let branchArr = this.parentList.filter(child => father.id === child.pid)
-        branchArr.length > 0 ? (father.children = branchArr) : ""
-        return father.pid === 0
-      })
-    }
+
   },
   methods: {
-    getToken,
     async handleAssign(row) {
       this.selectedRow = row
       this.loading = true
@@ -346,16 +296,16 @@ export default {
       listUser(this.queryForm).then(response => {
         let data = response.data
         this.userList = data.records
-        this.userList.forEach(user => {
-          let split = user.avatar.split('/');
-          let params = {
-            profile: split[0],
-            imageName: split[1]
-          }
-          getImage(params).then(response => {
-            user.avatar = response.data
-          })
-        })
+        // this.userList.forEach(user => {
+        //   let split = user.avatar.split('/');
+        //   let params = {
+        //     profile: split[0],
+        //     imageName: split[1]
+        //   }
+        //   getImage(params).then(response => {
+        //     user.avatar = response.data
+        //   })
+        // })
         this.total = data.total
         this.loading = false
       })
@@ -394,8 +344,6 @@ export default {
         updateTime: null,
         isDelete: null
       };
-      // 清空头像数据
-      this.avatarBase64Data = null
     },
     /**
      * 新增按钮
@@ -449,17 +397,6 @@ export default {
       this.reset();
       getEbSysUser(row.id).then(response => {
         this.form = response.data;
-        if (this.form.avatar) {
-          let split = this.form.avatar.split('/');
-          let params = {
-            profile: split[0],
-            imageName: split[1]
-          }
-          // 获取头像
-          getImage(params).then(response => {
-            this.avatarBase64Data = response.data
-          })
-        }
         this.open = true;
         this.title = "修改用户";
       });
@@ -495,43 +432,7 @@ export default {
       this.queryForm.pageSize = val
       this.getList()
     },
-    handleNodeClick(val) {
-      this.queryForm.departmentId = val.id
-      this.getList()
-    },
-    getParentList() {
-      getDepartmentParentList().then(response => {
-        this.parentList = response.data
-      })
-    },
-    handleAvatarSuccess(res, file) {
-      if (res.code === 200) {
-        this.form.avatar = res.path
-        let split = this.form.avatar.split('/');
-        let params = {
-          profile: split[0],
-          imageName: split[1]
-        }
-        // 获取头像
-        getImage(params).then(response => {
-          this.avatarBase64Data = response.data
-        })
-        this.$message.success(res.msg)
-      } else {
-        this.$message.error(res.msg)
-      }
-    },
-    beforeAvatarUpload(file) {
-      const isLt1M = file.size / 1024 / 1024 < 1
-      const isJPG = file.type !== 'image/jpeg' || file.type !== 'image/png' || file.type !== 'image/jpg'
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG, JPEG 或 PNG 格式!');
-      }
-      if (!isLt1M) {
-        this.$message.error('上传头像图片大小不能超过 1MB!');
-      }
-      return isJPG && isLt1M;
-    },
+
     getParentDepartmentId(val) {
       this.form.departmentId = val;
     }
@@ -539,30 +440,5 @@ export default {
 };
 </script>
 <style lang="scss">
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
 
-  :hover {
-    border-color: #409EFF;
-  }
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
 </style>

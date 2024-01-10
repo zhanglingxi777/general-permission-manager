@@ -19,7 +19,6 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="orderNum" column="order_num"/>
-        <result property="isDelete" column="is_delete"/>
     </resultMap>
 
     <sql id="selectEbSysPermissionVo">
@@ -36,12 +35,11 @@
                create_time,
                update_time,
                remark,
-               order_num,
-               is_delete
+               order_num
         from tb_permission
     </sql>
 
-    <select id="selectPermissionById" parameterType="top.zhouyang.admin.domain.Permission"
+    <select id="selectPermissionList" parameterType="top.zhouyang.admin.domain.Permission"
             resultMap="EbSysPermissionResult">
         <include refid="selectEbSysPermissionVo"/>
         <where>
@@ -51,7 +49,7 @@
     </select>
 
     <!-- List<EbSysPermission> selectEbSysPermissionByRoleId(Long roleId);   -->
-    <select id="selectPermissionList" resultMap="EbSysPermissionResult" parameterType="long">
+    <select id="selectPermissionById" resultMap="EbSysPermissionResult" parameterType="long">
         select
             esp.*
         from tb_permission esp
@@ -81,7 +79,6 @@
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
             <if test="orderNum != null">order_num,</if>
-            <if test="isDelete != null">is_delete,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="label != null and label != ''">#{label},</if>
@@ -97,7 +94,6 @@
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
             <if test="orderNum != null">#{orderNum},</if>
-            <if test="isDelete != null">#{isDelete},</if>
         </trim>
     </insert>
 
@@ -117,7 +113,6 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="orderNum != null">order_num = #{orderNum},</if>
-            <if test="isDelete != null">is_delete = #{isDelete},</if>
         </trim>
         where id = #{id}
     </update>

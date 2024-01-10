@@ -135,7 +135,6 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     public int insertPermission(Permission ebSysPermission) {
         // parent_name 根据parent_id查询 parent_id 为0：顶级菜单 为其他 从表中查询
         // is_delete = 0
-        ebSysPermission.setIsDelete(0L);
         if (ebSysPermission.getParentId() == 0L) {
             ebSysPermission.setParentName("顶级菜单");
         } else {

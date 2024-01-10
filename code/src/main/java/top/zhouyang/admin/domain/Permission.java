@@ -78,10 +78,6 @@ public class Permission {
      */
     private Long orderNum;
 
-    /**
-     * 是否删除（0未删除1已删除）
-     */
-    private Long isDelete;
 
     /**
      * 创建时间
