@@ -17,7 +17,8 @@
                     </template>
                     <el-upload
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :action="baseUrl + '/common/upload/avatar'"
+                        :headers="{'Authorization': 'Bearer ' + getToken()}"
                         :show-file-list="false"
                         :limit="1"
                         :multiple="false"
@@ -121,6 +122,7 @@
 <script>
 import {mapGetters} from 'vuex'
 import {getUserInfo} from "@/api/system/user";
+import {getToken} from "@/utils/auth";
 
 export default {
   name: 'Profile',
@@ -166,6 +168,7 @@ export default {
     this.getUser()
   },
   methods: {
+    getToken,
     getUser() {
       getUserInfo(this.userId).then(response => {
         this.userForm = response.data
@@ -175,19 +178,20 @@ export default {
 
     },
     handleAvatarSuccess(res, file) {
-
+      console.log('res', res)
+      console.log('file', file)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpg'
+      const isJPG = file.type === 'image/jpeg'
       const isPng = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG && !isPng) {
-        this.$message.error('上传头像图片只能是 JPG,PNG 格式!');
+        this.$message.error('上传头像图片只能是 JPG,PNG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isPng && isLt2M;
+      return (isJPG || isPng) && isLt2M
     }
   }
 }
