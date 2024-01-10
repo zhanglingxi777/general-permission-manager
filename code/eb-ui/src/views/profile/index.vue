@@ -121,7 +121,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import {getUserInfo} from "@/api/system/user";
+import {getUserInfo, updateUser} from "@/api/system/user";
 import {getToken} from "@/utils/auth";
 
 export default {
@@ -178,8 +178,18 @@ export default {
 
     },
     handleAvatarSuccess(res, file) {
-      console.log('res', res)
-      console.log('file', file)
+      if (res.code === 200) {
+        this.userForm.avatar = res.data
+        updateUser(this.userForm).then(response => {
+          if (response.code === 200) {
+            this.$message.success(res.msg)
+            // 更新用户信息
+            this.getUser()
+          }
+        })
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
