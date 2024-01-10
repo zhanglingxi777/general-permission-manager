@@ -16,7 +16,7 @@ let isRefreshToken = false
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    // 获取当前时间
+    /*// 获取当前时间
     let currentTime = Date.now()
     // 获取token过期时间
     let expireTime = getTokenTime() || Date.now()
@@ -40,13 +40,9 @@ service.interceptors.request.use(
           })
         }
       }
-    }
+    }*/
     // do something before request is sent
-
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
       config.headers['Authorization'] = 'Bearer ' + getToken()
     }
     return config

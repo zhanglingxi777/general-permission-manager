@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import top.zhouyang.admin.domain.Role;
 import top.zhouyang.admin.domain.vo.query.RoleQueryVO;
 
+import java.util.List;
+
 /**
  * 角色Service接口
  *
@@ -19,7 +21,7 @@ public interface IRoleService extends IService<Role> {
      * @param id 角色主键
      * @return 角色
      */
-    public Role selectRoleById(Long id);
+    Role selectRoleById(Long id);
 
     /**
      * 查询角色列表
@@ -44,7 +46,7 @@ public interface IRoleService extends IService<Role> {
      * @param ebSysRole 角色
      * @return 结果
      */
-    public int updateRole(Role ebSysRole);
+    int updateRole(Role ebSysRole);
 
     /**
      * 批量删除角色
@@ -52,7 +54,7 @@ public interface IRoleService extends IService<Role> {
      * @param ids 需要删除的角色主键集合
      * @return 结果
      */
-    public int deleteRoleByIds(Long[] ids);
+    int deleteRoleByIds(Long[] ids);
 
     /**
      * 删除角色信息
@@ -60,5 +62,13 @@ public interface IRoleService extends IService<Role> {
      * @param id 角色主键
      * @return 结果
      */
-    public int deleteRoleById(Long id);
+    int deleteRoleById(Long id);
+
+    /**
+     * 根据用户ID查询该用户的角色ID
+     *
+     * @param userId 用户ID
+     * @return 用户的角色ID
+     */
+    List<Long> selectRoleIdsByUserId(Long userId);
 }

@@ -20,7 +20,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param id 角色主键
      * @return 角色
      */
-    public Role selectRoleById(Long id);
+    Role selectRoleById(Long id);
 
     /**
      * 查询角色列表
@@ -28,7 +28,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param ebSysRole 角色
      * @return 角色集合
      */
-    public List<Role> selectRoleList(Role ebSysRole);
+    List<Role> selectRoleList(Role ebSysRole);
 
     /**
      * 新增角色
@@ -36,7 +36,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param ebSysRole 角色
      * @return 结果
      */
-    public int insertRole(Role ebSysRole);
+    int insertRole(Role ebSysRole);
 
     /**
      * 修改角色
@@ -44,7 +44,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param ebSysRole 角色
      * @return 结果
      */
-    public int updateRole(Role ebSysRole);
+    int updateRole(Role ebSysRole);
 
     /**
      * 删除角色
@@ -52,7 +52,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param id 角色主键
      * @return 结果
      */
-    public int deleteRoleById(Long id);
+    int deleteRoleById(Long id);
 
     /**
      * 批量删除角色
@@ -60,7 +60,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteRoleByIds(Long[] ids);
+    int deleteRoleByIds(Long[] ids);
 
     /**
      * 根据用户ID查询该用户的角色ID

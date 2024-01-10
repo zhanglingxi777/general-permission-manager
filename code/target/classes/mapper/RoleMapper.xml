@@ -12,7 +12,6 @@
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
-        <result property="isDelete" column="is_delete"/>
     </resultMap>
 
     <sql id="selectEbSysRoleVo">
@@ -22,12 +21,11 @@
                create_user,
                create_time,
                update_time,
-               remark,
-               is_delete
+               remark
         from tb_role
     </sql>
 
-    <select id="selectRoleById" parameterType="top.zhouyang.admin.domain.Role" resultMap="EbSysRoleResult">
+    <select id="selectRoleList" parameterType="top.zhouyang.admin.domain.Role" resultMap="EbSysRoleResult">
         <include refid="selectEbSysRoleVo"/>
         <where>
             <if test="roleCode != null  and roleCode != ''">and role_code like concat('%', #{roleCode}, '%')</if>
@@ -35,7 +33,7 @@
         </where>
     </select>
 
-    <select id="selectRoleList" parameterType="Long" resultMap="EbSysRoleResult">
+    <select id="selectRoleById" parameterType="Long" resultMap="EbSysRoleResult">
         <include refid="selectEbSysRoleVo"/>
         where id = #{id}
     </select>
@@ -49,7 +47,6 @@
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-            <if test="isDelete != null">is_delete,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="roleCode != null and roleCode != ''">#{roleCode},</if>
@@ -58,7 +55,6 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="isDelete != null">#{isDelete},</if>
         </trim>
     </insert>
 
@@ -71,7 +67,6 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="isDelete != null">is_delete = #{isDelete},</if>
         </trim>
         where id = #{id}
     </update>
@@ -93,7 +88,7 @@
     <select id="selectRoleIdsByUserId" parameterType="long" resultType="long">
         select
             esur.role_id
-        from eb_sys_user_role esur
+        from tb_user_role esur
         where esur.user_id = #{userId}
     </select>
 </mapper>

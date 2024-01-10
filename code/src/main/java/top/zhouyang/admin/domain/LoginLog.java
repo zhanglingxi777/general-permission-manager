@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-@TableName("eb_sys_login_log")
+@TableName("tb_login_log")
 public class LoginLog implements Serializable {
     private static final long serialVersionUID = 1L;
 

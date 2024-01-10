@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 角色菜单对象 eb_sys_role_permission
+ * 角色菜单对象 tb_role_permission
  *
  * @author Zhang Wenxu
  * @date 2023-12-20
  */
 @Data
-@TableName("eb_sys_role_permission")
+@TableName("tb_role_permission")
 public class RolePermission {
     private static final long serialVersionUID = 1L;
 

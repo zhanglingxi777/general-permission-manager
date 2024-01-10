@@ -48,15 +48,15 @@
 
       <el-row :gutter="10">
         <el-col :span="18">
-          <el-form-item prop="imageCode">
+          <el-form-item prop="verifyCode">
             <span class="svg-container">
               <svg-icon icon-class="star"/>
             </span>
-            <el-input placeholder="请输入验证码" v-model="loginForm.imageCode"></el-input>
+            <el-input placeholder="请输入验证码" v-model="loginForm.verifyCode"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-image style="width: 100%;height: 50px" :src="verifyImage.image" />
+          <el-image style="width: 100%;height: 50px;cursor: pointer;" @click="getVerifyImage" :src="verifyImage" />
         </el-col>
       </el-row>
 
@@ -85,13 +85,14 @@ export default {
       loginForm: {
         username: '',
         password: '',
-        imageCode: '',
+        verifyCode: '',
+        uuid: '',
         rememberMe: false
       },
       loginRules: {
         username: [{required: true, trigger: 'blur', message: "用户名不能为空"}],
         password: [{required: true, trigger: 'blur', message: "密码不能为空"}],
-        imageCode: [{required: true, trigger: 'blur', message: "验证码不能为空"}]
+        verifyCode: [{required: true, trigger: 'blur', message: "验证码不能为空"}]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -99,10 +100,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      verifyImage: {
-        image: null,
-        uuid: null
-      },
+      verifyImage: ''
     }
   },
   watch: {
@@ -130,7 +128,8 @@ export default {
     // 获取验证码图片
     getVerifyImage() {
       getVcImage().then(response => {
-        this.verifyImage = response.data
+        this.verifyImage = response.data.image
+        this.loginForm.uuid = response.data.uuid
       })
     },
     checkCapslock(e) {

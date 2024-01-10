@@ -21,14 +21,12 @@ import top.zhouyang.admin.domain.UserRole;
 import top.zhouyang.admin.domain.vo.*;
 import top.zhouyang.admin.domain.vo.query.ResetPwdQueryVO;
 import top.zhouyang.admin.domain.vo.query.UserQueryVO;
-import top.zhouyang.admin.service.IMenuTree;
-import top.zhouyang.admin.service.IRoleService;
-import top.zhouyang.admin.service.IUserRoleService;
-import top.zhouyang.admin.service.IUserService;
+import top.zhouyang.admin.service.*;
 import top.zhouyang.common.domain.AjaxResult;
 import top.zhouyang.common.utils.DateUtils;
 import top.zhouyang.common.utils.RedisUtils;
 import top.zhouyang.common.utils.StringUtils;
+import top.zhouyang.framework.config.ThreadLocalConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -51,9 +49,13 @@ public class UserController {
     @Autowired
     private IRoleService roleService;
     @Autowired
+    private IPermissionService permissionService;
+    @Autowired
     private IMenuTree menuTree;
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private ThreadLocalConfig threadLocalConfig;
     @Value("${custom.jwt.key}")
     private String key;
     @Value("${user.password.maxRetryCount}")
@@ -68,16 +70,16 @@ public class UserController {
      */
     @GetMapping("/getMenuList")
     public AjaxResult getMenuList() {
-        // TODO 获取用户菜单列表
-        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        List<Permission> permissionList = user.getPermissionList();
+        Map map = threadLocalConfig.get();
+        Object username = map.get("username");
+        User user = userService.selectUserByUsername(username.toString());
+        List<Long> roleIds = roleService.selectRoleIdsByUserId(user.getId());
+        List<Permission> permissionList = permissionService.selectPermissionListByRoleIds(roleIds);
         List<Permission> collect = permissionList.stream()
                 .filter(item -> Objects.nonNull(item) && item.getType() != 2)
                 .collect(Collectors.toList());
         List<RouterVO> routerVOList = menuTree.makeRouter(collect, 0L);
-        return AjaxResult.success("菜单数据获取成功", routerVOList);*/
-        return AjaxResult.success("菜单数据获取成功", new ArrayList<>());
+        return AjaxResult.success("菜单数据获取成功", routerVOList);
     }
 
     /**
@@ -100,24 +102,12 @@ public class UserController {
     /**
      * 刷新token
      *
-     * @param request 请求
      * @return 新的token
      */
     @GetMapping("/refreshToken")
-    public AjaxResult refreshToken(HttpServletRequest request) {
-        // 从请求头中获取JWT
-        String jwt = null;
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            jwt = bearerToken.substring(7);
-        }
-        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails user = (UserDetails) authentication.getPrincipal();
-        if (Objects.isNull(user)) {
-            return AjaxResult.error("获取用户信息失败");
-        }
-        String username = user.getUsername();*/
-        String username = "";
+    public AjaxResult refreshToken() {
+        Map map = threadLocalConfig.get();
+        Object username = map.get("username");
         JWTSigner jwtSigner = JWTSignerUtil.hs256(key.getBytes());
         Date nowDate = DateUtils.getNowDate();
         Date expireDate = DateUtils.addMinutes(nowDate, 30);
@@ -144,7 +134,7 @@ public class UserController {
         captcha.setGenerator(new RandomGenerator("0123456789", 4));
         captcha.createCode();
         String code = captcha.getCode();
-        redisUtils.setCacheObject("image-code:" + uuid, code, 1, TimeUnit.MINUTES);
+        redisUtils.setCacheObject("image-code:" + uuid, code, 5, TimeUnit.MINUTES);
         Map<String, Object> data = new HashMap<>();
         data.put("uuid", uuid);
         data.put("image", captcha.getImageBase64Data());
@@ -233,18 +223,29 @@ public class UserController {
     }
 
     /**
+     * 注销登录
+     * @return 是否成功
+     */
+    @GetMapping("/logout")
+    public AjaxResult logout() {
+        Map map = threadLocalConfig.get();
+        Object username = map.get("username");
+        redisUtils.deleteObject("login:" + username);
+        return AjaxResult.success("注销成功");
+    }
+
+    /**
      * 获取当前登录用户VO信息
      *
      * @return 当前登录用户VO信息
      */
     @GetMapping("/getInfo")
     public AjaxResult getInfo() {
-        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        if (Objects.isNull(user)) {
-            return AjaxResult.error("用户信息查询失败");
-        }
-        List<Permission> permissionList = user.getPermissionList();
+        Map map = threadLocalConfig.get();
+        Object username = map.get("username");
+        User user = userService.selectUserByUsername(username.toString());
+        List<Long> roleIds = roleService.selectRoleIdsByUserId(user.getId());
+        List<Permission> permissionList = permissionService.selectPermissionListByRoleIds(roleIds);
         Object[] roles = permissionList.stream().filter(Objects::nonNull).map(Permission::getCode).toArray();
         LambdaQueryWrapper<UserRole> qw = new LambdaQueryWrapper<>();
         qw.eq(Objects.nonNull(user.getId()), UserRole::getUserId, user.getId());
@@ -256,15 +257,12 @@ public class UserController {
         }
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setId(user.getId());
-        userInfoVO.setName(user.getNickName());
+        userInfoVO.setName(user.getUsername());
         userInfoVO.setAvatar(user.getAvatar());
         userInfoVO.setIntroduction(null);
         userInfoVO.setRoles(roles);
         userInfoVO.setRoleLCodeList(roleList);
-        return AjaxResult.success("用户信息查询成功", userInfoVO);*/
-        ThreadLocal<String> threadLocal = new ThreadLocal<>();
-        String username = threadLocal.get();
-        return AjaxResult.success("用户信息查询成功", username);
+        return AjaxResult.success("用户信息查询成功", userInfoVO);
     }
 
     /**
@@ -347,9 +345,9 @@ public class UserController {
     }
 
     /**
-     * 获取登录用户信息
+     * 获取登录用户信息列表
      *
-     * @return 登录用户信息
+     * @return 登录用户信息列表
      */
     @GetMapping("/login")
     public AjaxResult loginUser() {

@@ -13,7 +13,7 @@ import java.util.Date;
  * @date 2023-12-20
  */
 @Data
-@TableName("eb_sys_role")
+@TableName("tb_role")
 public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -37,11 +37,6 @@ public class Role implements Serializable {
      * 创建人id
      */
     private Long createUser;
-
-    /**
-     * 是否删除（0未删除1已删除）
-     */
-    private Integer isDelete;
 
     /**
      * 创建时间

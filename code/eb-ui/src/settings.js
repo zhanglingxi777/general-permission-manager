@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'E宝 - 在线求职招聘网站',
+  title: '新闻发布网站',
 
   /**
    * @type {boolean} true | false

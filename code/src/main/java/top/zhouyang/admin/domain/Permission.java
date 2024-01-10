@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2023-12-20
  */
 @Data
-@TableName("eb_sys_permission")
+@TableName("tb_permission")
 public class Permission {
     private static final long serialVersionUID = 1L;
 

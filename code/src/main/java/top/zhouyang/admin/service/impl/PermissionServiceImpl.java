@@ -27,14 +27,14 @@ import java.util.*;
 @Service
 @Transactional
 public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission> implements IPermissionService {
-    private final PermissionMapper ebSysPermissionMapper;
+    private final PermissionMapper permissionMapper;
     private final IMenuTree menuTree;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
     @Autowired
-    public PermissionServiceImpl(PermissionMapper ebSysPermissionMapper, IMenuTree menuTree, UserMapper userMapper, RoleMapper roleMapper) {
-        this.ebSysPermissionMapper = ebSysPermissionMapper;
+    public PermissionServiceImpl(PermissionMapper permissionMapper, IMenuTree menuTree, UserMapper userMapper, RoleMapper roleMapper) {
+        this.permissionMapper = permissionMapper;
         this.menuTree = menuTree;
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
@@ -48,7 +48,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     @Override
     public Permission selectPermissionById(Long id) {
-        return ebSysPermissionMapper.selectPermissionById(id);
+        return permissionMapper.selectPermissionById(id);
     }
 
     /**
@@ -59,7 +59,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     @Override
     public List<Permission> selectPermissionList(Permission ebSysPermission) {
-        List<Permission> list = ebSysPermissionMapper.selectPermissionList(ebSysPermission);
+        List<Permission> list = permissionMapper.selectPermissionList(ebSysPermission);
         return this.menuTree.makeMenuTree(list, 0L);
     }
 
@@ -116,7 +116,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         QueryWrapper<Permission> qw = new QueryWrapper<>();
         qw.in("type", Arrays.asList(0, 1));
         qw.orderByAsc("order_num");
-        List<Permission> list = ebSysPermissionMapper.selectList(qw);
+        List<Permission> list = permissionMapper.selectList(qw);
         Permission permission = new Permission();
         permission.setId(0L);
         permission.setParentId(-1L);
@@ -139,12 +139,12 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         if (ebSysPermission.getParentId() == 0L) {
             ebSysPermission.setParentName("顶级菜单");
         } else {
-            Permission parent = ebSysPermissionMapper.selectPermissionById(ebSysPermission.getParentId());
+            Permission parent = permissionMapper.selectPermissionById(ebSysPermission.getParentId());
             ebSysPermission.setParentName(parent.getLabel());
         }
         ebSysPermission.setCreateTime(DateUtils.getNowDate());
 
-        return ebSysPermissionMapper.insertPermission(ebSysPermission);
+        return permissionMapper.insertPermission(ebSysPermission);
     }
 
     /**
@@ -156,7 +156,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public int updatePermission(Permission ebSysPermission) {
         ebSysPermission.setUpdateTime(DateUtils.getNowDate());
-        return ebSysPermissionMapper.updatePermission(ebSysPermission);
+        return permissionMapper.updatePermission(ebSysPermission);
     }
 
     /**
@@ -167,7 +167,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     @Override
     public int deletePermissionByIds(Long[] ids) {
-        return ebSysPermissionMapper.deletePermissionByIds(ids);
+        return permissionMapper.deletePermissionByIds(ids);
     }
 
     /**
@@ -178,14 +178,19 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
      */
     @Override
     public int deletePermissionById(Long id) {
-        return ebSysPermissionMapper.deletePermissionById(id);
+        return permissionMapper.deletePermissionById(id);
     }
 
     @Override
     public boolean checkHasChildrenPermission(Long id) {
         LambdaQueryWrapper<Permission> qw = new LambdaQueryWrapper<>();
         qw.eq(Objects.nonNull(id), Permission::getParentId, id);
-        Long count = ebSysPermissionMapper.selectCount(qw);
+        Long count = permissionMapper.selectCount(qw);
         return count != 0;
+    }
+
+    @Override
+    public List<Permission> selectPermissionListByRoleIds(List<Long> roles) {
+        return permissionMapper.selectPermissionListByRoleIds(roles);
     }
 }

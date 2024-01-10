@@ -20,6 +20,7 @@ import top.zhouyang.admin.service.IRoleService;
 import top.zhouyang.common.utils.DateUtils;
 import top.zhouyang.common.utils.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -88,7 +89,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
      */
     @Override
     public int insertRole(Role ebSysRole) {
-        ebSysRole.setIsDelete(0);
         ebSysRole.setCreateTime(DateUtils.getNowDate());
         ebSysRole.setUpdateTime(DateUtils.getNowDate());
         return roleMapper.insertRole(ebSysRole);
@@ -138,5 +138,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         rolePermissionMapper.delete(rpQw);
         // 删除角色信息
         return roleMapper.deleteRoleById(id);
+    }
+
+    @Override
+    public List<Long> selectRoleIdsByUserId(Long userId) {
+        return roleMapper.selectRoleIdsByUserId(userId);
     }
 }

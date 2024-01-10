@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 角色用户对象 eb_sys_user_role
+ * 角色用户对象 tb_user_role
  *
  * @author Zhang Wenxu
  * @date 2023-12-20
  */
 @Data
 @NoArgsConstructor
-@TableName("eb_sys_user_role")
+@TableName("tb_user_role")
 public class UserRole implements Serializable {
     private static final long serialVersionUID = 1L;
 

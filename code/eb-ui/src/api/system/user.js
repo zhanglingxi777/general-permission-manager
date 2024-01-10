@@ -36,7 +36,7 @@ export function getInfo() {
  */
 export function logout() {
   return request({
-    url: '/doLogout',
+    url: '/sys/user/logout',
     method: 'get'
   })
 }
@@ -80,7 +80,7 @@ export function listUser(params) {
  * @param id
  * @returns {*}
  */
-export function getEbSysUser(id) {
+export function getUserInfo(id) {
   return request({
     url: '/sys/user/' + id,
     method: 'get'
@@ -91,7 +91,7 @@ export function getEbSysUser(id) {
  * 获取用户下拉框列表
  * @returns {*}
  */
-export function getEbSysUserSelectVO() {
+export function getUserSelectVO() {
   return request({
     url: '/sys/user/list/select',
     method: 'get'
@@ -103,7 +103,7 @@ export function getEbSysUserSelectVO() {
  * @param data
  * @returns {*}
  */
-export function addEbSysUser(data) {
+export function addUser(data) {
   return request({
     url: '/sys/user',
     method: 'post',
@@ -116,7 +116,7 @@ export function addEbSysUser(data) {
  * @param data
  * @returns {*}
  */
-export function updateEbSysUser(data) {
+export function updateUser(data) {
   return request({
     url: '/sys/user',
     method: 'put',
@@ -129,7 +129,7 @@ export function updateEbSysUser(data) {
  * @param id
  * @returns {*}
  */
-export function delEbSysUser(id) {
+export function delUser(id) {
   return request({
     url: '/sys/user/' + id,
     method: 'delete'

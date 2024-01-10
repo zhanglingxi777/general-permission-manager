@@ -87,4 +87,12 @@ public interface IPermissionService extends IService<Permission> {
     public int deletePermissionById(Long id);
 
     public boolean checkHasChildrenPermission(Long id);
+
+    /**
+     * 根据权限Id列表查询权限信息
+     *
+     * @param roles 权限Id列表
+     * @return 权限信息
+     */
+    List<Permission> selectPermissionListByRoleIds(List<Long> roles);
 }

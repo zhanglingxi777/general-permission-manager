@@ -2,6 +2,7 @@ import {login, logout, getInfo} from '@/api/system/user'
 import {getToken, setToken, removeToken, setTokenTime} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
 import {getImage} from "@/api/common";
+import user from "@/views/system/user/index.vue";
 
 const state = {
   token: getToken(),
@@ -35,9 +36,10 @@ const mutations = {
 const actions = {
   // user login
   login({commit}, userInfo) {
-    const {username, password, imageCode, rememberMe} = userInfo
+    const {username, password, verifyCode, uuid, rememberMe} = userInfo
     return new Promise((resolve, reject) => {
-      login({username: username.trim(), password: password, imageCode: imageCode, 'remember-me': rememberMe}).then(response => {
+      login({username: username.trim(), password: password, verifyCode: verifyCode, uuid: uuid,
+        'remember-me': rememberMe}).then(response => {
         const {token, expireTime} = response
         commit('SET_TOKEN', token)
         setToken(token)
@@ -52,24 +54,12 @@ const actions = {
   // get user info
   getInfo({commit, state}) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(async response => {
+      getInfo(state.token).then(response => {
         const {data} = response
         if (!data) {
           reject('Verification failed, please Login again.')
         }
         let {roles, name, avatar, introduction, id} = data
-        if (avatar) {
-          let split = avatar.split('/');
-          let params = {
-            profile: split[0],
-            imageName: split[1]
-          }
-          // 获取avatar数据
-          await getImage(params).then(response => {
-            avatar = response.data
-          })
-        }
-
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')

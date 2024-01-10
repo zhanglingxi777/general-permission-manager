@@ -55,7 +55,7 @@
         select
             esp.*
         from tb_permission esp
-        inner join eb_sys_role_permission esrp on esrp.permission_id = esp.id
+        inner join tb_role_permission esrp on esrp.permission_id = esp.id
         where esrp.role_id = #{roleId}
     </select>
 
@@ -150,7 +150,7 @@
             esp.remark
         FROM
             tb_permission esp
-        LEFT JOIN eb_sys_role_permission esrp ON esp.id = esrp.permission_id
+        LEFT JOIN tb_role_permission esrp ON esp.id = esrp.permission_id
         WHERE esrp.role_id IN
         <foreach item="item" index="index" collection="roles"
                  open="(" separator="," close=")">

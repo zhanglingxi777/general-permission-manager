@@ -8,7 +8,7 @@ custom:
   aes:
     key: "0D7FB71E8EC31E97"
   # 文件路径
-  profile: "D:/ebao/uploadPath/"
+  profile: "D:/uploadPath/"
 
 server:
   # 设置端口号
@@ -23,6 +23,10 @@ spring:
     # JSON日期格式化设置时区为上海
     time-zone: Asia/Shanghai
 
+  servlet:
+    multipart:
+      max-file-size: 2MB
+
   # mvc 配置
   mvc:
     format:
@@ -31,9 +35,9 @@ spring:
 
   # 数据库配置
   datasource:
-    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/ebao?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/zhouyang-news?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
     username: "ebao"
-    password: ""
+    password: "n5fCjUJGqzSEMiv3DivpH"
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   # redis 配置
