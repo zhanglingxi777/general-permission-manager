@@ -1,0 +1,93 @@
+# 自定义参数
+custom:
+  # jwt配置
+  jwt:
+    # jwt密钥
+    key: "S2V5LU11c3QtQmUtYXQtbGVhc3QtMzItYnl0ZXMtaW4tbGVuZ3RoIQ=="
+  # aes密钥
+  aes:
+    key: "0D7FB71E8EC31E97"
+  # 文件路径
+  profile: "D:/ebao/uploadPath/"
+
+server:
+  # 设置端口号
+  port: 8081
+
+# spring配置
+spring:
+  # jackson 配置
+  jackson:
+    # JSON日期格式化
+    date-format: yyyy-MM-dd
+    # JSON日期格式化设置时区为上海
+    time-zone: Asia/Shanghai
+
+  # mvc 配置
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+
+  # 数据库配置
+  datasource:
+    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/ebao?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+    username: "ebao"
+    password: ""
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  # redis 配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    # 数据库索引
+    database: 1
+    password:
+    # 连接超时时间
+    connect-timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+
+# mybatis配置
+mybatis:
+  # 搜索指定包别名
+  type-aliases-package: top.zhouyang.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  config-location: classpath:mybatis-config.xml
+
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    # 控制台打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 配置日志
+logging:
+  # 字符集
+  charset:
+    # 控制台字符集
+    console: utf-8
+    # 文件字符集
+    file: UTF-8
+  # 日志文件
+  file:
+    # 文件名
+    name: logging.log
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 3
+    # 密码锁定时间（默认10分钟）
+    lockTime: 1
