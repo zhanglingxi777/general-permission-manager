@@ -101,10 +101,10 @@
                   注: 密码默认 <code style="font-weight: bold">123456</code>
                 </el-tag>
               </el-col>
-              <el-col style="float: right" :span="24">
+              <span style="float: right">
                 <el-button type="primary" @click="submitForm">确 定</el-button>
                 <el-button @click="cancel">取 消</el-button>
-              </el-col>
+              </span>
             </el-row>
           </el-form>
         </el-tab-pane>

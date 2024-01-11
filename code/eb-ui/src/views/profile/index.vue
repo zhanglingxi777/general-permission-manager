@@ -73,7 +73,7 @@
                     </el-radio-group>
                   </el-form-item>
                 </el-form>
-                <span>
+                <span style="float: right;">
                   <el-button type="primary">确 定</el-button>
                   <el-button @click="$router.push('/dashboard')">取 消</el-button>
                 </span>
