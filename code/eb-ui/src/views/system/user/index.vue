@@ -91,9 +91,9 @@
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col v-if="form.id" :span="12">
                 <el-form-item label="头像" prop="avatar">
-                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
+                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" :username="form.username" @avatarUploadRes="getAvatarUploadRes"/>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -142,7 +142,7 @@
 
 <script>
 import {
-  addUser,
+  addUser, delUser,
   getAssignRoleList,
   getRoleIdByUserId, getUserInfo,
   listUser, updateUser,
@@ -152,6 +152,7 @@ import Password from 'vue-password-strength-meter'
 import {assignUserRole} from "@/api/system/role";
 import AvatarUpload from "@/components/AvatarUpload/index.vue";
 import ResetPwd from "@/views/system/user/resetPwd.vue";
+import {encrypt} from "@/utils/aes";
 
 export default {
   name: "EbSysUser",
@@ -339,16 +340,8 @@ export default {
               }
             })
           } else {
-            if (this.pwdScore < 3) {
-              this.$message({
-                type: 'warning',
-                dangerouslyUseHTMLString: true,
-                message: `<p>密码复杂度过低，请重新输入！</p>
-                        <p>警告：${this.pwdFeedback.warning}</p>
-                        <p>建议：${this.pwdFeedback.suggestions}</p>`
-              })
-              return
-            }
+            // 新增用户密码默认123456
+            this.form.password = encrypt('123456')
             addUser(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('新增成功')

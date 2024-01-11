@@ -35,7 +35,7 @@ spring:
 
   # 数据库配置
   datasource:
-    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/zhouyang-news?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/general_permission_system?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
     username: "ebao"
     password: "n5fCjUJGqzSEMiv3DivpH"
     driver-class-name: com.mysql.cj.jdbc.Driver

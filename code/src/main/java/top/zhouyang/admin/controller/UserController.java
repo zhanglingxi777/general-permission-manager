@@ -3,6 +3,7 @@ package top.zhouyang.admin.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.signers.JWTSigner;
 import cn.hutool.jwt.signers.JWTSignerUtil;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import top.zhouyang.admin.domain.Permission;
-import top.zhouyang.admin.domain.Role;
-import top.zhouyang.admin.domain.User;
-import top.zhouyang.admin.domain.UserRole;
+import top.zhouyang.admin.domain.*;
 import top.zhouyang.admin.domain.vo.*;
 import top.zhouyang.admin.domain.vo.query.ResetPwdQueryVO;
 import top.zhouyang.admin.domain.vo.query.UserQueryVO;
@@ -28,7 +26,9 @@ import top.zhouyang.common.utils.RedisUtils;
 import top.zhouyang.common.utils.StringUtils;
 import top.zhouyang.framework.config.ThreadLocalConfig;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -56,6 +56,8 @@ public class UserController {
     private RedisUtils redisUtils;
     @Autowired
     private ThreadLocalConfig threadLocalConfig;
+    @Autowired
+    private IPersistentLoginsService persistentLoginsService;
     @Value("${custom.jwt.key}")
     private String key;
     @Value("${user.password.maxRetryCount}")
@@ -148,7 +150,7 @@ public class UserController {
      * @return 是否成功
      */
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginReqVO loginReqVO) {
+    public AjaxResult login(@RequestBody LoginReqVO loginReqVO, HttpServletResponse response) {
         String uuid = loginReqVO.getUuid();
         String verifyCode = loginReqVO.getVerifyCode();
         // 1.校验验证码
@@ -209,6 +211,23 @@ public class UserController {
                 // 修改用户最后一次登录时间
                 user.setLastLoginTime(DateUtils.getNowDate());
                 userService.updateById(user);
+                // 用户是否勾选记住我功能
+                Boolean rememberMe = loginReqVO.getRememberMe();
+                if (rememberMe) {
+                    // series
+                    String series = UUID.randomUUID().toString();
+                    // token
+                    String rememberMeToken = UUID.randomUUID().toString();
+                    // last_used
+                    Date lastUsed = DateUtils.getNowDate();
+                    PersistentLogins persistentLogins = new PersistentLogins(username, series,
+                            rememberMeToken, lastUsed);
+                    persistentLoginsService.save(persistentLogins);
+                    Cookie rememberMeCookie = new Cookie("remember-me", Base64.encode(series + ":" + rememberMeToken));
+                    // 存储一周
+                    rememberMeCookie.setMaxAge(7 * 24 * 60 * 60);
+                    response.addCookie(rememberMeCookie);
+                }
                 // 返回数据
                 AjaxResult success = AjaxResult.success("登录成功!");
                 success.put("token", token);
@@ -290,15 +309,15 @@ public class UserController {
      * 新增用户
      */
     @PostMapping
-    public AjaxResult add(@RequestBody User ebSysUser) {
-        User user = userService.selectUserByUsername(ebSysUser.getUsername());
+    public AjaxResult add(@RequestBody User addUser) {
+        User user = userService.selectUserByUsername(addUser.getUsername());
         if (user != null) {
             return AjaxResult.error("该登录名称已被使用，请重新输入");
         }
-        int res = userService.insertUser(ebSysUser);
+        int res = userService.insertUser(addUser);
         if (res > 0) {
             AjaxResult success = AjaxResult.success("用户添加成功");
-            success.put("userId", ebSysUser.getId());
+            success.put("userId", addUser.getId());
             return success;
         }
         return AjaxResult.error("用户添加失败");

@@ -36,7 +36,6 @@
               autocomplete="on"
               @keyup.native="checkCapslock"
               @blur="capsTooltip = false"
-              @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
@@ -50,7 +49,11 @@
             <span class="svg-container">
               <svg-icon icon-class="star"/>
             </span>
-            <el-input placeholder="请输入验证码" v-model="loginForm.verifyCode"></el-input>
+            <el-input
+              placeholder="请输入验证码"
+              v-model="loginForm.verifyCode"
+              @keyup.enter.native="handleLogin"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">

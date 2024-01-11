@@ -43,8 +43,8 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import {clearSessionStorage, removeToken} from "@/utils/auth";
 import {logout} from "@/api/system/user";
+import {removeToken} from "@/utils/auth";
 
 export default {
   components: {
@@ -81,8 +81,6 @@ export default {
           if (response.code === 200) {
             // 清空token
             removeToken()
-            // 清空sessionStorage
-            clearSessionStorage()
             // 跳转到登陆页面
             this.$router.push('/login')
           }

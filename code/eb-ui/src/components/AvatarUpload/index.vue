@@ -1,7 +1,7 @@
 <template>
   <el-upload
     class="avatar-uploader"
-    :action="baseUrl + '/common/upload/avatar'"
+    :action="baseUrl + '/common/upload/avatar' + (username ? '/' + username : '')"
     :headers="{'Authorization': 'Bearer ' + getToken(), 'Cache-Control': 'no-cache'}"
     :show-file-list="false"
     :limit="1"
@@ -20,6 +20,10 @@ export default {
   name: 'AvatarUpload',
   props: {
     avatar: {
+      type: String,
+      default: null
+    },
+    username: {
       type: String,
       default: null
     }

@@ -3,13 +3,11 @@ package top.zhouyang.admin.controller;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.zhouyang.common.domain.AjaxResult;
 import top.zhouyang.common.utils.FileUtils;
+import top.zhouyang.common.utils.StringUtils;
 import top.zhouyang.framework.config.ThreadLocalConfig;
 
 import java.io.IOException;
@@ -45,14 +43,17 @@ public class CommonController {
      * 上传头像
      *
      * @param file 头像文件
+     * @param username 用户名
      * @return 是否成功
      */
-    @PostMapping("/upload/avatar")
-    public AjaxResult uploadAvatar(MultipartFile file) {
+    @PostMapping("/upload/avatar/{username}")
+    public AjaxResult uploadAvatar(MultipartFile file, @PathVariable(required = false) String username) {
         try (InputStream is = file.getInputStream()) {
-            Map map = threadLocalConfig.get();
-            Object username = map.get("username");
-            String filePath = fileUtils.uploadFile(is, "avatar", username.toString());
+            if (StringUtils.isBlank(username)) {
+                Map map = threadLocalConfig.get();
+                username = map.get("username").toString();
+            }
+            String filePath = fileUtils.uploadFile(is, "avatar", username);
             filePath = filePath.replace(fileUtils.profile, "");
             if (!filePath.startsWith("/")) {
                 filePath = "/" + filePath;

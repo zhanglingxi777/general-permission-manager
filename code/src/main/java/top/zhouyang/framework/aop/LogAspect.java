@@ -24,7 +24,6 @@ public class LogAspect {
     @Autowired
     private ILoginLogService loginLogService;
 
-    // TODO login方法切面表达式
     @Pointcut("execution(public * top.zhouyang.admin.controller.UserController.login(..))")
     public void loginPointcut(){};
 

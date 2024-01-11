@@ -1,8 +1,7 @@
 import axios from 'axios'
 import {MessageBox, Message} from 'element-ui'
 import store from '@/store'
-import {getToken, setToken, clearSessionStorage, getTokenTime, setTokenTime, removeTokenTime} from '@/utils/auth'
-import {refreshToken} from "@/api/system/user";
+import {getToken} from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -12,36 +11,9 @@ const service = axios.create({
 })
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
-let isRefreshToken = false
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    /*// 获取当前时间
-    let currentTime = Date.now()
-    // 获取token过期时间
-    let expireTime = getTokenTime() || Date.now()
-    if (config.url !== '/doLogin' && expireTime && expireTime > 0) {
-      let min = (expireTime - currentTime) / 1000 / 60
-      if (min < 10) {
-        console.log('刷新token')
-        if (!isRefreshToken) {
-          isRefreshToken = true
-          refreshToken().then(response => {
-            console.log('tokenVO', response)
-            if (response.code === 200) {
-              setToken(response.data.token)
-              setTokenTime(response.data.expireTime)
-              config.headers['Authorization'] = 'Bearer ' + getToken()
-              return config
-            }
-          }).catch(() => {
-          }).finally(() => {
-            isRefreshToken = false
-          })
-        }
-      }
-    }*/
-    // do something before request is sent
     if (store.getters.token) {
       config.headers['Authorization'] = 'Bearer ' + getToken()
     }
@@ -50,8 +22,6 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
-    clearSessionStorage()
-    removeTokenTime()
     return Promise.reject(error)
   }
 )
@@ -87,8 +57,6 @@ service.interceptors.response.use(
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
-            clearSessionStorage()
-            removeTokenTime()
             location.reload()
           })
         })
@@ -100,8 +68,6 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    clearSessionStorage()
-    removeTokenTime()
     Message({
       message: error.message,
       type: 'error',

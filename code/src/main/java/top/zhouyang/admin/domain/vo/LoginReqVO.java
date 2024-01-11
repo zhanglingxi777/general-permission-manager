@@ -3,6 +3,7 @@ package top.zhouyang.admin.domain.vo;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -31,4 +32,10 @@ public class LoginReqVO implements Serializable {
      */
     @NotBlank(message = "验证码不能为空!")
     private String verifyCode;
+
+    /**
+     * 记住我
+     */
+    @NotNull(message = "记住我不能为空!")
+    private Boolean rememberMe;
 }
