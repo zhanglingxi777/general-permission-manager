@@ -1,27 +1,18 @@
 <template>
-  <div class="dashboard-container">
-    <el-row>
-      <el-col :span="24">
-        <component :is="currentRole"/>
-      </el-col>
-    </el-row>
+  <div class="app-container">
+    首页
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
 
 export default {
   name: 'Dashboard',
-  components: {adminDashboard, editorDashboard},
   data() {
     return {
       currentRole: 'adminDashboard',
       role: null,
-      isSeeker: false,
-      isHr: false,
       showList: []
     }
   },
@@ -37,3 +28,6 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+
+</style>

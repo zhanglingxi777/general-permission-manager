@@ -1,5 +1,5 @@
 module.exports = {
-  title: '新闻发布网站',
+  title: '通用权限管理系统',
 
   /**
    * @type {boolean} true | false
