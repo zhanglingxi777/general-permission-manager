@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import top.zhouyang.admin.domain.LoginLog;
 import top.zhouyang.admin.domain.vo.LoginReqVO;
 import top.zhouyang.admin.mapper.LoginLogMapper;
+import top.zhouyang.admin.service.ILoginLogService;
 import top.zhouyang.common.domain.AjaxResult;
 import top.zhouyang.common.utils.DateUtils;
 
@@ -21,10 +22,10 @@ import java.util.Objects;
 @Slf4j
 public class LogAspect {
     @Autowired
-    private LoginLogMapper loginLogMapper;
+    private ILoginLogService loginLogService;
 
     // TODO login方法切面表达式
-    /*@Pointcut("execution(public * top.zhanglingxi.system.controller.EbSysUserController.login(..))")
+    @Pointcut("execution(public * top.zhouyang.admin.controller.UserController.login(..))")
     public void loginPointcut(){};
 
     @Around("loginPointcut()")
@@ -38,14 +39,14 @@ public class LogAspect {
                 LoginLog loginLog = new LoginLog();
                 loginLog.setUsername(reqVO.getUsername());
                 loginLog.setRequestData(JSONObject.toJSONString(reqVO));
-//                loginLog.setLoginStatus(Integer.parseInt(ajaxResult.get("code").toString()) == 200 ? 1 : 0);
+                loginLog.setLoginStatus(Integer.parseInt(ajaxResult.get("code").toString()) == 200 ? "成功" : "失败");
                 loginLog.setLoginTime(DateUtils.getNowDate());
                 log.info("新增登录日志，日志信息 = {}", loginLog);
-                loginLogMapper.insertLoginLog(loginLog);
+                loginLogService.save(loginLog);
                 return res;
             }
-            throw new RuntimeException("请求/doLogin接口，响应数据异常");
+            throw new RuntimeException("请求/login接口，响应数据异常");
         }
-        throw new IllegalArgumentException("请求/doLogin接口，请求参数不能为空");
-    }*/
+        throw new IllegalArgumentException("请求/login接口，请求参数不能为空");
+    }
 }

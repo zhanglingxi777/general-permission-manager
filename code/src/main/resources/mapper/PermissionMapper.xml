@@ -49,7 +49,7 @@
     </select>
 
     <!-- List<EbSysPermission> selectEbSysPermissionByRoleId(Long roleId);   -->
-    <select id="selectPermissionById" resultMap="EbSysPermissionResult" parameterType="long">
+    <select id="selectPermissionByRoleId" resultMap="EbSysPermissionResult" parameterType="long">
         select
             esp.*
         from tb_permission esp
@@ -57,7 +57,7 @@
         where esrp.role_id = #{roleId}
     </select>
 
-    <select id="selectPermissionByRoleId" parameterType="Long" resultMap="EbSysPermissionResult">
+    <select id="selectPermissionById" parameterType="Long" resultMap="EbSysPermissionResult">
         <include refid="selectEbSysPermissionVo"/>
         where id = #{id}
     </select>

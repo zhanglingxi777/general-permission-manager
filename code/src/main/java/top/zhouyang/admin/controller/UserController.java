@@ -295,8 +295,6 @@ public class UserController {
         if (user != null) {
             return AjaxResult.error("该登录名称已被使用，请重新输入");
         }
-        // TODO 密码加密
-        // ebSysUser.setPassword(passwordEncoder.encode(ebSysUser.getPassword()));
         int res = userService.insertUser(ebSysUser);
         if (res > 0) {
             AjaxResult success = AjaxResult.success("用户添加成功");

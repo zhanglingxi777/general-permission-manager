@@ -1,18 +1,16 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10">
-      <el-col :span="6">
-        <el-form ref="form" :model="queryForm" label-width="80px">
-          <el-form-item label="角色名称">
-            <el-input v-model="queryForm.roleName" placeholder="请输入角色名称"></el-input>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="18">
-        <el-button type="primary" icon="el-icon-search" @click="handlerQuery">查询</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-        <el-button type="success" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
-      </el-col>
+      <el-form ref="form" :model="queryForm" size="small" label-width="80px" :inline="true">
+        <el-form-item label="角色名称">
+          <el-input v-model="queryForm.roleName" placeholder="请输入角色名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="handlerQuery">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+          <el-button type="success" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
 
     <el-row>

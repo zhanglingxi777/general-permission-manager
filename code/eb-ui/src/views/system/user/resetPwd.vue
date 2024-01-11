@@ -22,9 +22,9 @@
         </el-col>
       </el-row>
     </el-form>
-    <span style="float: right">
-      <el-button @click="closeResetPwd">取 消</el-button>
+    <span>
       <el-button type="primary" @click="submitResetPwd">确 定</el-button>
+      <el-button @click="closeResetPwd">取 消</el-button>
     </span>
   </el-row>
 </template>

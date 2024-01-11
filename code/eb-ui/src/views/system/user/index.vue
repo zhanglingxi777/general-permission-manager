@@ -2,36 +2,33 @@
   <div class="app-container">
     <el-row>
       <!-- 用户信息     -->
-      <el-col :span="20">
+      <el-col :span="24">
         <el-row>
-          <el-form ref="queryForm" :model="queryForm" label-width="80px">
-            <el-row :gutter="10">
-              <el-col :span="6">
-                <el-form-item label="用户名">
-                  <el-input v-model="queryForm.username" placeholder="请输入用户名"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="姓名">
-                  <el-input v-model="queryForm.realName" placeholder="请输入姓名"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="电话">
-                  <el-input v-model="queryForm.phone" placeholder="请输入电话"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-button type="primary" icon="el-icon-search" @click="getList">查询</el-button>
-                <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-                <el-button type="success" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
-              </el-col>
-            </el-row>
+          <el-form ref="queryForm" :model="queryForm" size="small" :inline="true" label-width="80px">
+            <el-form-item label="用户名">
+              <el-input v-model="queryForm.username" placeholder="请输入用户名"></el-input>
+            </el-form-item>
+            <el-form-item label="姓名">
+              <el-input v-model="queryForm.realName" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="电话">
+              <el-input v-model="queryForm.phone" placeholder="请输入电话"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="getList">查询</el-button>
+              <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+              <el-button type="success" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
+            </el-form-item>
           </el-form>
         </el-row>
 
         <el-row>
           <el-table v-loading="loading" :data="userList" border style="width: 100%">
+            <el-table-column label="头像" align="center" prop="avatar" show-overflow-tooltip min-width="120">
+              <template slot-scope="scope">
+                <el-image style="width: 80px;border-radius: 100px;" :src="baseUrl + '/common/file' + scope.row.avatar + '?date=' + Date.now()"/>
+              </template>
+            </el-table-column>
             <el-table-column label="用户名" align="center" prop="username" show-overflow-tooltip min-width="120"/>
             <el-table-column label="姓名" align="center" prop="realName" show-overflow-tooltip min-width="120"/>
             <el-table-column label="电话" align="center" prop="phone" show-overflow-tooltip min-width="120"/>
@@ -60,70 +57,65 @@
     </el-row>
 
     <!-- 添加或修改用户对话框 -->
-    <el-dialog :title="title" :visible="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户名" prop="username">
-              <el-input maxlength="20" show-word-limit :disabled="Boolean(form.id)" v-model="form.username"
-                        placeholder="请输入用户名"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" v-if="!Boolean(form.id)">
-            <el-form-item label="密码" prop="password">
-              <el-input maxlength="20" show-word-limit v-model="form.password"
-                        placeholder="请输入密码"/>
-              <password v-model="form.password" :strength-meter-only="true" @score="showScore"
-                        @feedback="showFeedback"/>
-              <!--              <password v-model="form.password" :toggle="true" @score="showScore" @feedback="showFeedback"/>-->
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="realName">
-              <el-input maxlength="50" show-word-limit v-model="form.realName" placeholder="请输入姓名"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="电话" prop="phone">
-              <el-input maxlength="50" show-word-limit v-model="form.phone" placeholder="请输入电话"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="昵称" prop="nickName">
-              <el-input maxlength="50" show-word-limit v-model="form.nickName" placeholder="请输入昵称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" prop="gender">
-              <el-radio-group v-model="form.gender">
-                <el-radio :label="0">男</el-radio>
-                <el-radio :label="1">女</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input maxlength="50" show-word-limit v-model="form.email" placeholder="请输入邮箱"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="头像" prop="avatar">
-
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+    <el-dialog :title="title" :visible="open" width="800px" @close="cancel" append-to-body>
+      <el-tabs type="border-card" v-model="activeName">
+        <el-tab-pane name="baseInfo" label="基本信息">
+          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="用户名" prop="username">
+                  <el-input maxlength="20" show-word-limit :disabled="Boolean(form.id)" v-model="form.username"
+                            placeholder="请输入用户名"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="姓名" prop="realName">
+                  <el-input maxlength="50" show-word-limit v-model="form.realName" placeholder="请输入姓名"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="电话" prop="phone">
+                  <el-input maxlength="50" show-word-limit v-model="form.phone" placeholder="请输入电话"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="邮箱" prop="email">
+                  <el-input maxlength="50" show-word-limit v-model="form.email" placeholder="请输入邮箱"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="性别" prop="gender">
+                  <el-radio-group v-model="form.gender">
+                    <el-radio label="男">男</el-radio>
+                    <el-radio label="女">女</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="头像" prop="avatar">
+                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-tag type="danger" v-if="!form.id">
+                  注: 密码默认 <code style="font-weight: bold">123456</code>
+                </el-tag>
+              </el-col>
+              <el-col style="float: right" :span="24">
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button @click="cancel">取 消</el-button>
+              </el-col>
+            </el-row>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane v-if="form.id" name="updatePwd" label="修改密码">
+          <reset-pwd @closeDialog="cancel"/>
+        </el-tab-pane>
+      </el-tabs>
     </el-dialog>
 
     <!-- 分配用户角色对话框   -->
-    <el-dialog :title="title" :visible="openAssign" width="800px" append-to-body>
+    <el-dialog :title="title" :visible="openAssign" width="800px" @close="openAssign = false" append-to-body>
       <el-table ref="assignRoleTable" :data="assignRoleList" :loading="loading" border style="width: 100%">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="roleCode" label="角色编码" min-width="180"></el-table-column>
@@ -149,30 +141,30 @@
 </template>
 
 <script>
-import {getDepartmentParentList} from "@/api/department"
 import {
-  addEbSysUser,
-  delEbSysUser,
+  addUser,
   getAssignRoleList,
-  getEbSysUser,
-  getRoleIdByUserId,
-  listUser,
-  updateEbSysUser
+  getRoleIdByUserId, getUserInfo,
+  listUser, updateUser,
 } from "@/api/system/user"
 import TreeSelect from "@/components/TreeSelect/index.vue"
-import {getImage} from "@/api/common";
 import Password from 'vue-password-strength-meter'
 import {assignUserRole} from "@/api/system/role";
+import AvatarUpload from "@/components/AvatarUpload/index.vue";
+import ResetPwd from "@/views/system/user/resetPwd.vue";
 
 export default {
   name: "EbSysUser",
   components: {
+    ResetPwd,
+    AvatarUpload,
     TreeSelect,
     Password
   },
   data() {
     return {
-
+      baseUrl: process.env.VUE_APP_BASE_API,
+      activeName: 'baseInfo',
       userId: null,
       parentList: [],
       userList: [],
@@ -231,9 +223,7 @@ export default {
   created() {
     this.getList()
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     async handleAssign(row) {
       this.selectedRow = row
@@ -281,31 +271,11 @@ export default {
         }
       })
     },
-    showScore(score) {
-      console.log('💯', score)
-      this.pwdScore = score
-    },
-    showFeedback({suggestions, warning}) {
-      console.log('🙏', suggestions)
-      console.log('⚠', warning)
-      this.pwdFeedback.suggestions = suggestions
-      this.pwdFeedback.warning = warning
-    },
     getList() {
       this.loading = true
       listUser(this.queryForm).then(response => {
         let data = response.data
         this.userList = data.records
-        // this.userList.forEach(user => {
-        //   let split = user.avatar.split('/');
-        //   let params = {
-        //     profile: split[0],
-        //     imageName: split[1]
-        //   }
-        //   getImage(params).then(response => {
-        //     user.avatar = response.data
-        //   })
-        // })
         this.total = data.total
         this.loading = false
       })
@@ -359,7 +329,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateEbSysUser(this.form).then(response => {
+            updateUser(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success("修改成功")
                 this.open = false
@@ -379,7 +349,7 @@ export default {
               })
               return
             }
-            addEbSysUser(this.form).then(response => {
+            addUser(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('新增成功')
                 this.open = false;
@@ -395,7 +365,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      getEbSysUser(row.id).then(response => {
+      getUserInfo(row.id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改用户";
@@ -408,7 +378,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delEbSysUser(row.id).then(response => {
+        delUser(row.id).then(response => {
           if (response.code === 200) {
             this.$message.success('删除成功')
             this.getList()
@@ -432,9 +402,17 @@ export default {
       this.queryForm.pageSize = val
       this.getList()
     },
-
-    getParentDepartmentId(val) {
-      this.form.departmentId = val;
+    getAvatarUploadRes(val) {
+      // 更新用户头像数据
+      let data = {
+        id: this.form.id,
+        avatar: val.data
+      }
+      updateUser(data).then(response => {
+        this.$message.success("上传成功!")
+        // 强制更新头像上传组件 刷新图片
+        this.$refs.avatarUpload.$forceUpdate()
+      })
     }
   }
 };
