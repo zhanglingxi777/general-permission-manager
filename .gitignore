@@ -29,5 +29,10 @@
 node_modules/
 dist/
 
+# 压缩包
+*.zip
+*.gz
+*.tar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
