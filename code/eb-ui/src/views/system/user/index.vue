@@ -102,7 +102,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="头像" prop="avatar">
-                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
+                  <avatar-upload ref="avatarUpload" :username="form.username" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
                 </el-form-item>
               </el-col>
               <el-col :span="24">

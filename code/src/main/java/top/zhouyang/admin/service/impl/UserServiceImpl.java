@@ -171,17 +171,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 解密 oldPwd
         AES aes = SecureUtil.aes(aesKey.getBytes());
         oldPwd = aes.decryptStr(oldPwd);
-        /*if (passwordEncoder.matches(oldPwd, user.getPassword())) {
+        if (oldPwd.equals(user.getPassword())) {
             // oldPwd正确 更新用户密码
-            // 解密 newPwd
-            newPwd = aes.decryptStr(newPwd);
             if (oldPwd.equals(newPwd)) {
                 throw new IllegalArgumentException("新密码与原密码相同，请输入不同的密码！");
             }
-            String encodedNewPwd = passwordEncoder.encode(newPwd);
-            user.setPassword(encodedNewPwd);
+            user.setPassword(newPwd);
             return updateById(user);
-        }*/
+        }
         throw new IllegalArgumentException("原密码不正确，请重新输入！");
     }
 }
