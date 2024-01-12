@@ -4,9 +4,13 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.codec.Base64;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.signers.JWTSigner;
 import cn.hutool.jwt.signers.JWTSignerUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.zhouyang.admin.domain.*;
 import top.zhouyang.admin.domain.vo.*;
 import top.zhouyang.admin.domain.vo.query.ResetPwdQueryVO;
@@ -26,9 +31,12 @@ import top.zhouyang.common.utils.RedisUtils;
 import top.zhouyang.common.utils.StringUtils;
 import top.zhouyang.framework.config.ThreadLocalConfig;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -58,6 +66,8 @@ public class UserController {
     private ThreadLocalConfig threadLocalConfig;
     @Autowired
     private IPersistentLoginsService persistentLoginsService;
+    @Value("${custom.aes.key}")
+    private String aesKey;
     @Value("${custom.jwt.key}")
     private String key;
     @Value("${user.password.maxRetryCount}")
@@ -224,6 +234,7 @@ public class UserController {
                             rememberMeToken, lastUsed);
                     persistentLoginsService.save(persistentLogins);
                     Cookie rememberMeCookie = new Cookie("remember-me", Base64.encode(series + ":" + rememberMeToken));
+                    rememberMeCookie.setPath("/");
                     // 存储一周
                     rememberMeCookie.setMaxAge(7 * 24 * 60 * 60);
                     response.addCookie(rememberMeCookie);
@@ -246,10 +257,15 @@ public class UserController {
      * @return 是否成功
      */
     @GetMapping("/logout")
-    public AjaxResult logout() {
+    public AjaxResult logout(HttpServletResponse response) {
         Map map = threadLocalConfig.get();
         Object username = map.get("username");
+        // 清除 redis中的缓存
         redisUtils.deleteObject("login:" + username);
+        // 删除remember-me cookie
+        Cookie rememberMeCookie = new Cookie("remember-me", "");
+        rememberMeCookie.setMaxAge(0);
+        response.addCookie(rememberMeCookie);
         return AjaxResult.success("注销成功");
     }
 
@@ -397,5 +413,98 @@ public class UserController {
             return AjaxResult.success("注销成功");
         }
         return AjaxResult.error("注销失败！");
+    }
+
+    /**
+     * 导入
+     */
+    @PostMapping("/import")
+    public AjaxResult importData(MultipartFile file) throws IOException {
+        List<User> userList = new ArrayList<>();
+        StringBuilder message = new StringBuilder();
+        try (InputStream is = file.getInputStream()) {
+            EasyExcel.read(is, UserImportVO.class, new PageReadListener<UserImportVO>(dataList -> {
+                if (dataList.isEmpty()) {
+                    message.append("<p>导入数据为空！</p>");
+                } else {
+                    for (int i = 0; i < dataList.size(); i++) {
+                        try {
+                            UserImportVO data = dataList.get(i);
+                            // 用户名
+                            String username = data.getUsername();
+                            if (StringUtils.isEmpty(username)) {
+                                message.append("<p>").append("第 ").append(i + 1).append(" 行: </p>").append("<p>用户名不能为空</p>");
+                            }
+                            LambdaQueryWrapper<User> userQw = new LambdaQueryWrapper<>();
+                            userQw.eq(StringUtils.isNotEmpty(username), User::getUsername, username);
+                            User user = userService.getOne(userQw);
+                            if (Objects.nonNull(user)) {
+                                message.append("<p>").append("第 ").append(i + 1).append(" 行: </p>").append("<p>").append("用户名已存在").append("</p>");
+                            }
+                            User newUser = new User();
+                            BeanUtils.copyProperties(data, newUser);
+                            // 创建时间
+                            newUser.setCreateTime(DateUtils.getNowDate());
+                            // 默认密码 123456
+                            AES aes = SecureUtil.aes(aesKey.getBytes());
+                            String password = aes.encryptBase64("123456");
+                            newUser.setPassword(password);
+                            // 登录失败次数
+                            newUser.setLoginErrorNum(0);
+                            // 是否为管理员
+                            newUser.setIsAdmin(0);
+                            userList.add(newUser);
+                        } catch (Exception e) {
+                            message.append("<p>").append("第 ").append(i + 1).append(" 行: </p>").append("<p>").append(e.getMessage()).append("</p>");
+                        }
+                    }
+                }
+            })).sheet().doRead();
+        }
+        if (message.toString().isEmpty()) {
+            userService.saveBatch(userList);
+            return AjaxResult.success("导入成功");
+        }
+        message.append("<p>请检查数据正确性后再导入！</p>");
+        return AjaxResult.error(message.toString());
+    }
+
+    /**
+     * 导入模板
+     */
+    @GetMapping("/import/template")
+    public void importTemplate(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=公司岗位导入模板.xlsx");
+        response.reset(); // 重点突出
+        try (ServletOutputStream os = response.getOutputStream()) {
+            EasyExcel.write(os, UserImportVO.class)
+                    .sheet("用户导入模板")
+                    .doWrite(new ArrayList<>());
+        }
+    }
+
+    /**
+     * 导出
+     */
+    @GetMapping("/output")
+    public void output(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + new Date().getTime() + ".xlsx");
+        response.reset(); // 重点突出
+        try (ServletOutputStream os = response.getOutputStream()) {
+            List<User> list = userService.list();
+            List<UserImportVO> importVOList = new ArrayList<>();
+            list.forEach(item -> {
+                UserImportVO importVO = new UserImportVO();
+                BeanUtils.copyProperties(item, importVO);
+                importVOList.add(importVO);
+            });
+            EasyExcel.write(os, UserImportVO.class)
+                    .sheet("导出数据")
+                    .doWrite(importVOList);
+        }
     }
 }

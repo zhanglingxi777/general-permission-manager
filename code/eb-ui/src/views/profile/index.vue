@@ -74,7 +74,7 @@
                   </el-form-item>
                 </el-form>
                 <span style="float: right;">
-                  <el-button type="primary">确 定</el-button>
+                  <el-button type="primary" @click="handleUpdateUser">确 定</el-button>
                   <el-button @click="$router.push('/dashboard')">取 消</el-button>
                 </span>
               </el-tab-pane>
@@ -137,32 +137,6 @@ export default {
     },
     handleClick(tab, event) {
     },
-    handleAvatarSuccess(res, file) {
-      if (res.code === 200) {
-        this.userForm.avatar = res.data
-        updateUser(this.userForm).then(response => {
-          if (response.code === 200) {
-            this.$message.success(res.msg)
-            // 更新用户信息
-            this.getUser()
-          }
-        })
-      } else {
-        this.$message.error(res.msg)
-      }
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isPng = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG && !isPng) {
-        this.$message.error('上传头像图片只能是 JPG,PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return (isJPG || isPng) && isLt2M
-    },
     getAvatarUploadRes(val) {
       // 更新用户头像数据
       let data = {
@@ -173,6 +147,23 @@ export default {
         this.$message.success("上传成功!")
         // 强制更新头像上传组件 刷新图片
         this.$refs.avatarUpload.$forceUpdate()
+      })
+    },
+    handleUpdateUser() {
+      let data = {
+        id: this.userForm.id,
+        realName: this.userForm.realName,
+        phone: this.userForm.phone,
+        email: this.userForm.email,
+        gender: this.userForm.gender
+      }
+      updateUser(data).then(response => {
+        if (response.code === 200) {
+          this.$message.success(response.msg)
+          this.getUser()
+        } else {
+          this.$message.error(response.msg)
+        }
       })
     }
   }

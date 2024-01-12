@@ -17,16 +17,24 @@
             <el-form-item>
               <el-button type="primary" icon="el-icon-search" @click="getList">查询</el-button>
               <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-              <el-button type="success" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
             </el-form-item>
           </el-form>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            <el-button type="success" size="small" icon="el-icon-plus" @click="handlerAdd">新增</el-button>
+            <el-button type="primary" size="small" icon="el-icon-upload2" @click="openImport = true">导入</el-button>
+            <el-button type="warning" size="small" icon="el-icon-download" @click="handleOutput">导出</el-button>
+          </el-col>
         </el-row>
 
         <el-row>
           <el-table v-loading="loading" :data="userList" border style="width: 100%">
             <el-table-column label="头像" align="center" prop="avatar" show-overflow-tooltip min-width="120">
               <template slot-scope="scope">
-                <el-image style="width: 80px;border-radius: 100px;" :src="baseUrl + '/common/file' + scope.row.avatar + '?date=' + Date.now()"/>
+                <el-image v-if="scope.row.avatar" style="width: 80px;border-radius: 100px;"
+                          :src="baseUrl + '/common/file' + scope.row.avatar + '?date=' + Date.now()"/>
               </template>
             </el-table-column>
             <el-table-column label="用户名" align="center" prop="username" show-overflow-tooltip min-width="120"/>
@@ -42,6 +50,7 @@
               </template>
             </el-table-column>
           </el-table>
+
           <el-pagination
             style="float: right"
             @size-change="handleSizeChange"
@@ -91,9 +100,9 @@
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col v-if="form.id" :span="12">
+              <el-col :span="12">
                 <el-form-item label="头像" prop="avatar">
-                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" :username="form.username" @avatarUploadRes="getAvatarUploadRes"/>
+                  <avatar-upload ref="avatarUpload" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -137,6 +146,26 @@
         <el-button type="primary" @click="submitUserRole">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 导入对话框   -->
+    <el-dialog title="导入数据" :visible.sync="openImport" width="400px" append-to-body>
+      <el-upload
+        class="upload-demo"
+        drag
+        accept=".xlsx"
+        :action="baseUrl + '/sys/user/import'"
+        :headers="{'Authorization': 'Bearer ' + getToken()}"
+        :multiple="false"
+        :limit="1"
+        :on-success="handleImportSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">
+          <el-link type="primary" @click="handleImportTemp">下载导入模板</el-link>
+          <div>只能上传excel文件，且不超过1MB</div>
+        </div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -152,7 +181,8 @@ import Password from 'vue-password-strength-meter'
 import {assignUserRole} from "@/api/system/role";
 import AvatarUpload from "@/components/AvatarUpload/index.vue";
 import ResetPwd from "@/views/system/user/resetPwd.vue";
-import {encrypt} from "@/utils/aes";
+import {getToken} from "@/utils/auth";
+import axios from "axios";
 
 export default {
   name: "EbSysUser",
@@ -212,13 +242,9 @@ export default {
         ]
       },
       treeSelectKey: Date.now(),
-      pwdScore: null,
-      pwdFeedback: {
-        suggestions: null,
-        warning: null
-      },
       openAssign: false,
-      selectedRow: null
+      selectedRow: null,
+      openImport: false
     };
   },
   created() {
@@ -226,6 +252,7 @@ export default {
   },
   computed: {},
   methods: {
+    getToken,
     async handleAssign(row) {
       this.selectedRow = row
       this.loading = true
@@ -340,8 +367,6 @@ export default {
               }
             })
           } else {
-            // 新增用户密码默认123456
-            this.form.password = encrypt('123456')
             addUser(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('新增成功')
@@ -406,7 +431,50 @@ export default {
         // 强制更新头像上传组件 刷新图片
         this.$refs.avatarUpload.$forceUpdate()
       })
-    }
+    },
+    // 下载导入模板
+    handleImportTemp() {
+      axios.get(this.baseUrl + '/sys/user/import/template', {
+        headers: {
+          'Authorization': 'Bearer ' + getToken()
+        },
+        responseType: 'blob'
+      }).then(response => {
+        let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
+        let url = window.URL.createObjectURL(blob)
+        let a = document.createElement("a")
+        a.href = url
+        //文件名
+        a.download = 'template.xlsx'
+        a.click()
+      })
+    },
+    handleImportSuccess(response, file, fileList) {
+      if (response.code === 200) {
+        this.$message.success(response.msg)
+      } else {
+        this.$message.error(response.msg)
+      }
+      this.openImport = false
+      this.getList()
+    },
+    // 导出
+    handleOutput() {
+      axios.get(this.baseUrl + '/sys/user/output', {
+        headers: {
+          'Authorization': 'Bearer ' + getToken()
+        },
+        responseType: 'blob'
+      }).then(response => {
+        let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
+        let url = window.URL.createObjectURL(blob)
+        let a = document.createElement("a")
+        a.href = url
+        //文件名
+        a.download = 'output.xlsx'
+        a.click()
+      })
+    },
   }
 };
 </script>

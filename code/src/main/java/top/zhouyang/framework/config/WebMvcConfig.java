@@ -27,10 +27,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 0 tokenInterceptor
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**")
+                .order(0)
                 .excludePathPatterns("/sys/user/vcImage", "/sys/user/login", "/common/file/**");
+        // 1 rememberMeInterceptor
         registry.addInterceptor(rememberMeInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                .order(1)
+                .excludePathPatterns("/sys/user/vcImage", "/sys/user/login", "/common/file/**");
     }
 }

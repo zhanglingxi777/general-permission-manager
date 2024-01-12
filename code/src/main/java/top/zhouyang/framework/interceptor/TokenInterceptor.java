@@ -39,8 +39,12 @@ public class TokenInterceptor implements HandlerInterceptor {
         String authorization = request.getHeader("Authorization");
         if (StringUtils.isBlank(authorization)) {
             // 未携带token 拦截
-            pass = false;
             message = "请求未携带凭证,请重新登录!";
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            AjaxResult error = AjaxResult.error(HttpStatus.UNAUTHORIZED.value(), message);
+            out.write(JSONObject.toJSONString(error));
+            return false;
         } else {
             // 携带了token 校验token
             if (authorization.startsWith("Bearer ")) {
@@ -48,8 +52,8 @@ public class TokenInterceptor implements HandlerInterceptor {
                 String token = split[1];
                 // 校验token
                 if (JWTUtil.verify(token, key.getBytes())) {
-                    // 判断token是否过期
                     try {
+                        // 判断token是否过期
                         JWTValidator.of(token).validateDate();
                         // 从JWT中提取用户名
                         JWT parsed = JWTUtil.parseToken(token);
@@ -66,32 +70,39 @@ public class TokenInterceptor implements HandlerInterceptor {
                                 threadLocalConfig.set(map);
                                 return pass;
                             } else {
-                                pass = false;
-                                message = "用户凭证已过期,请重新登录!";
+                                // 用户凭证已过期 交给rememberMe拦截器
+                                return true;
                             }
                         } else {
-                            pass = false;
                             message = "用户凭证校验失败,请重新登录!";
+                            response.setCharacterEncoding("UTF-8");
+                            PrintWriter out = response.getWriter();
+                            AjaxResult error = AjaxResult.error(HttpStatus.UNAUTHORIZED.value(), message);
+                            out.write(JSONObject.toJSONString(error));
+                            return false;
                         }
                     } catch (ValidateException e) {
-                        pass = false;
-                        message = "用户凭证已过期,请重新登录!";
+                        // 用户凭证已过期 交给rememberMe拦截器
+                        return true;
                     }
                 } else {
                     // token校验失败
-                    pass = false;
                     message = "用户凭证校验失败,请重新登录!";
+                    response.setCharacterEncoding("UTF-8");
+                    PrintWriter out = response.getWriter();
+                    AjaxResult error = AjaxResult.error(HttpStatus.UNAUTHORIZED.value(), message);
+                    out.write(JSONObject.toJSONString(error));
+                    return false;
                 }
             } else {
                 // token 格式错误
-                pass = false;
                 message = "用户凭证校验失败,请重新登录!";
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+                AjaxResult error = AjaxResult.error(HttpStatus.UNAUTHORIZED.value(), message);
+                out.write(JSONObject.toJSONString(error));
+                return false;
             }
         }
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-        AjaxResult error = AjaxResult.error(HttpStatus.UNAUTHORIZED.value(), message);
-        out.write(JSONObject.toJSONString(error));
-        return pass;
     }
 }

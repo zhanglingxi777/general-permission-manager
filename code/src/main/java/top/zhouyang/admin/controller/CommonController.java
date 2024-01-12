@@ -32,11 +32,16 @@ public class CommonController {
     @PostMapping("/upload")
     public AjaxResult upload(MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
-
+            String filePath = fileUtils.uploadFile(is);
+            filePath = filePath.replace(fileUtils.profile, "");
+            if (!filePath.startsWith("/")) {
+                filePath = "/" + filePath;
+            }
+            return AjaxResult.success("上传成功!", filePath);
         } catch (IOException e) {
-
+            log.error("上传文件时发生异常,异常信息: {}", e.getMessage());
+            return AjaxResult.error("上传失败");
         }
-        return null;
     }
 
     /**

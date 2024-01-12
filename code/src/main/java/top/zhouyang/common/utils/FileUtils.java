@@ -44,9 +44,7 @@ public class FileUtils {
      * @return 文件全路径
      */
     public String uploadFile(InputStream is, String prefix) throws IOException {
-        // 获取文件类型
-        String type = FileTypeUtil.getType(is);
-        return uploadFile(is, prefix, UUID.randomUUID() + "." + type);
+        return uploadFile(is, prefix, UUID.randomUUID().toString());
     }
 
     /**
