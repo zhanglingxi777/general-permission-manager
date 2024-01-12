@@ -168,9 +168,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean resetPwd(Long userId, String oldPwd, String newPwd) {
         User user = getById(userId);
-        // 解密 oldPwd
-        AES aes = SecureUtil.aes(aesKey.getBytes());
-        oldPwd = aes.decryptStr(oldPwd);
         if (oldPwd.equals(user.getPassword())) {
             // oldPwd正确 更新用户密码
             if (oldPwd.equals(newPwd)) {

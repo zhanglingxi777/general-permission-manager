@@ -371,10 +371,14 @@ public class UserController {
      */
     @PutMapping("/pwd")
     public AjaxResult resetPwd(@RequestBody ResetPwdQueryVO queryVO) {
-        if (userService.resetPwd(queryVO.getUserId(), queryVO.getOldPwd(), queryVO.getNewPwd())) {
-            return AjaxResult.success("修改密码成功");
+        try {
+            if (userService.resetPwd(queryVO.getUserId(), queryVO.getOldPwd(), queryVO.getNewPwd())) {
+                return AjaxResult.success("修改密码成功");
+            }
+            return AjaxResult.error("修改密码失败！");
+        } catch (Exception e) {
+            return AjaxResult.error("修改密码失败！");
         }
-        return AjaxResult.error("修改密码失败！");
     }
 
     /**

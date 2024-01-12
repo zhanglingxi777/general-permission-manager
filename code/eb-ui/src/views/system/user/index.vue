@@ -100,7 +100,7 @@
                   </el-radio-group>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="12" v-if="form.id">
                 <el-form-item label="头像" prop="avatar">
                   <avatar-upload ref="avatarUpload" :username="form.username" :avatar="form.avatar" @avatarUploadRes="getAvatarUploadRes"/>
                 </el-form-item>
