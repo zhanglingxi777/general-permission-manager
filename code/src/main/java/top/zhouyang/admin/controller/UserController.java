@@ -238,6 +238,11 @@ public class UserController {
                     // 存储一周
                     rememberMeCookie.setMaxAge(7 * 24 * 60 * 60);
                     response.addCookie(rememberMeCookie);
+                } else {
+                    // 如果未勾选记住我选项 将remember-me cookie清除
+                    Cookie rememberCookie = new Cookie("remember-me", "");
+                    rememberCookie.setMaxAge(0);
+                    response.addCookie(rememberCookie);
                 }
                 // 返回数据
                 AjaxResult success = AjaxResult.success("登录成功!");

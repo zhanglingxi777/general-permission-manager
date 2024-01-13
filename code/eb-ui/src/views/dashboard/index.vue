@@ -1,14 +1,16 @@
 <template>
   <div class="app-container">
-    首页
+    <profile/>
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
+import Profile from "@/views/profile/index.vue";
 
 export default {
   name: 'Dashboard',
+  components: {Profile},
   data() {
     return {
       currentRole: 'adminDashboard',
