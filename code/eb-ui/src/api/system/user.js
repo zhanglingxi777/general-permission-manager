@@ -32,6 +32,17 @@ export function getInfo() {
 }
 
 /**
+ * 自动登录
+ */
+export function autoLogin() {
+  return request({
+    url: '/public/auto/login',
+    method: 'post'
+  })
+}
+
+
+/**
  * 注销
  */
 export function logout() {

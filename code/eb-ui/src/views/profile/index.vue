@@ -131,9 +131,11 @@ export default {
   methods: {
     getToken,
     getUser() {
-      getUserInfo(this.userId).then(response => {
-        this.userForm = response.data
-      })
+      if (this.userId) {
+        getUserInfo(this.userId).then(response => {
+          this.userForm = response.data
+        })
+      }
     },
     handleClick(tab, event) {
     },

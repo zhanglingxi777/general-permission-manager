@@ -1,8 +1,6 @@
 import {login, logout, getInfo} from '@/api/system/user'
-import {getToken, setToken, removeToken, setTokenTime} from '@/utils/auth'
+import {getToken, setToken, removeToken} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
-import {getImage} from "@/api/common";
-import user from "@/views/system/user/index.vue";
 
 const state = {
   token: getToken(),
@@ -40,7 +38,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({username: username.trim(), password: password, verifyCode: verifyCode, uuid: uuid,
         rememberMe: rememberMe}).then(response => {
-        const {token, expireTime} = response
+        const {token} = response
         commit('SET_TOKEN', token)
         setToken(token)
         resolve()
@@ -53,6 +51,7 @@ const actions = {
   // get user info
   getInfo({commit, state}) {
     return new Promise((resolve, reject) => {
+      console.log('getInfo(state.token)', state)
       getInfo(state.token).then(response => {
         const {data} = response
         if (!data) {

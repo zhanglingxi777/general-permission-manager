@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.zhouyang.framework.interceptor.RememberMeInterceptor;
 import top.zhouyang.framework.interceptor.TokenInterceptor;
 
 @Configuration
@@ -15,8 +14,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private String profile;
     @Autowired
     private TokenInterceptor tokenInterceptor;
-    @Autowired
-    private RememberMeInterceptor rememberMeInterceptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -31,11 +28,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**")
                 .order(0)
-                .excludePathPatterns("/sys/user/vcImage", "/sys/user/login", "/common/file/**");
-        // 1 rememberMeInterceptor
-        registry.addInterceptor(rememberMeInterceptor)
-                .addPathPatterns("/**")
-                .order(1)
-                .excludePathPatterns("/sys/user/vcImage", "/sys/user/login", "/common/file/**");
+                .excludePathPatterns("/sys/user/vcImage", "/sys/user/login", "/common/file/**", "/public/**", "/error");
     }
 }

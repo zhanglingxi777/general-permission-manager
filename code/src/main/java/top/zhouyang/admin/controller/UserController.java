@@ -220,20 +220,37 @@ public class UserController {
                 redisUtils.setCacheObject("login:" + username, token, 30, TimeUnit.MINUTES);
                 // 修改用户最后一次登录时间
                 user.setLastLoginTime(DateUtils.getNowDate());
+                // 清空登录错误次数
+                user.setLoginErrorNum(0);
                 userService.updateById(user);
                 // 用户是否勾选记住我功能
                 Boolean rememberMe = loginReqVO.getRememberMe();
                 if (rememberMe) {
-                    // series
-                    String series = UUID.randomUUID().toString();
-                    // token
-                    String rememberMeToken = UUID.randomUUID().toString();
-                    // last_used
-                    Date lastUsed = DateUtils.getNowDate();
-                    PersistentLogins persistentLogins = new PersistentLogins(username, series,
-                            rememberMeToken, lastUsed);
-                    persistentLoginsService.save(persistentLogins);
-                    Cookie rememberMeCookie = new Cookie("remember-me", Base64.encode(series + ":" + rememberMeToken));
+                    LambdaQueryWrapper<PersistentLogins> plQw = new LambdaQueryWrapper<>();
+                    // 序列号
+                    plQw.eq(StringUtils.isNotBlank(username), PersistentLogins::getUsername, username);
+                    PersistentLogins persistentLogins = persistentLoginsService.getOne(plQw);
+                    if (Objects.isNull(persistentLogins)) {
+                        // series
+                        String series = UUID.randomUUID().toString();
+                        // token
+                        String rememberMeToken = UUID.randomUUID().toString();
+                        // last_used
+                        Date lastUsed = DateUtils.getNowDate();
+                        persistentLogins = new PersistentLogins(username, series,
+                                rememberMeToken, lastUsed);
+                        persistentLoginsService.save(persistentLogins);
+                    } else {
+                        // token
+                        String rememberMeToken = UUID.randomUUID().toString();
+                        // last_used
+                        Date lastUsed = DateUtils.getNowDate();
+                        persistentLogins.setToken(rememberMeToken);
+                        persistentLogins.setLastUsed(lastUsed);
+                        persistentLoginsService.update(persistentLogins, plQw);
+                    }
+                    Cookie rememberMeCookie = new Cookie("remember-me", Base64.encode(persistentLogins.getSeries()
+                            + ":" + persistentLogins.getToken()));
                     rememberMeCookie.setPath("/");
                     // 存储一周
                     rememberMeCookie.setMaxAge(7 * 24 * 60 * 60);
