@@ -65,21 +65,11 @@ router.beforeEach(async (to, from, next) => {
       if (rememberMeCookie) {
         console.log('5. has remember-me cookie, auto login')
         // 调用自动登录
-        autoLogin().then(async response => {
-          console.log('6. auto login response', response)
-          if (response.code === 200) {
-            let token = response.token
-            setToken(token)
-            next()
-          } else {
-            // remove token and go to login page to re-login
-            await store.dispatch('user/resetToken')
-            Message.error(response.msg || 'Has Error')
-            next(`/login?redirect=${to.path}`)
-            NProgress.done()
-          }
-        })
-        // next()
+        await store.dispatch('user/autoLogin')
+        const {roles} = await store.dispatch('user/getInfo')
+        const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+        router.addRoutes(accessRoutes)
+        next({...to, replace: true})
       } else {
         console.log('7. other pages that do not have permission to access are redirected to the login page.')
         // other pages that do not have permission to access are redirected to the login page.
