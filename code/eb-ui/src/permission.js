@@ -54,28 +54,27 @@ router.beforeEach(async (to, from, next) => {
   } else {
     /* has no token*/
     console.log('2. has no token')
+    // 检查是否有remember-me cookie
+    let rememberMeCookie = getCookie('remember-me')
+    if (rememberMeCookie) {
+      console.log('5. has remember-me cookie, auto login')
+      // 调用自动登录
+      await store.dispatch('user/autoLogin')
+      const {roles} = await store.dispatch('user/getInfo')
+      const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+      router.addRoutes(accessRoutes)
+      next({...to, replace: true})
+    }
+
     if (whiteList.indexOf(to.path) !== -1) {
       console.log('3. in the free login whitelist, go directly')
       // in the free login whitelist, go directly
       next()
     } else {
-      console.log('4. remember-me cookie')
-      // 检查是否有remember-me cookie
-      let rememberMeCookie = getCookie('remember-me')
-      if (rememberMeCookie) {
-        console.log('5. has remember-me cookie, auto login')
-        // 调用自动登录
-        await store.dispatch('user/autoLogin')
-        const {roles} = await store.dispatch('user/getInfo')
-        const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-        router.addRoutes(accessRoutes)
-        next({...to, replace: true})
-      } else {
-        console.log('7. other pages that do not have permission to access are redirected to the login page.')
-        // other pages that do not have permission to access are redirected to the login page.
-        next(`/login?redirect=${to.path}`)
-        NProgress.done()
-      }
+      console.log('7. other pages that do not have permission to access are redirected to the login page.')
+      // other pages that do not have permission to access are redirected to the login page.
+      next(`/login?redirect=${to.path}`)
+      NProgress.done()
     }
   }
 })
