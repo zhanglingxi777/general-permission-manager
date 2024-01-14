@@ -352,6 +352,10 @@ public class UserController {
         if (user != null) {
             return AjaxResult.error("该登录名称已被使用，请重新输入");
         }
+        // 默认密码 123456
+        AES aes = SecureUtil.aes(aesKey.getBytes());
+        String password = aes.encryptBase64("123456");
+        addUser.setPassword(password);
         int res = userService.insertUser(addUser);
         if (res > 0) {
             AjaxResult success = AjaxResult.success("用户添加成功");
