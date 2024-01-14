@@ -9,7 +9,7 @@ import {autoLogin} from "@/api/system/user";
 
 NProgress.configure({showSpinner: false}) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = [/\/login/, /\/auth-redirect/, /\/portal\/.*/] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
@@ -54,7 +54,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     /* has no token*/
     console.log('2. has no token')
-    // 检查是否有remember-me cookie
+    // 1.检查是否有remember-me cookie
     let rememberMeCookie = getCookie('remember-me')
     if (rememberMeCookie) {
       console.log('5. has remember-me cookie, auto login')
@@ -66,7 +66,15 @@ router.beforeEach(async (to, from, next) => {
       next({...to, replace: true})
     }
 
-    if (whiteList.indexOf(to.path) !== -1) {
+    // 2.没有remember-me cookie，检查是否在白名单
+    let pass = false
+    whiteList.forEach(white => {
+      if (white.test(to.path)) {
+        pass = true
+      }
+    })
+
+    if (pass) {
       console.log('3. in the free login whitelist, go directly')
       // in the free login whitelist, go directly
       next()
