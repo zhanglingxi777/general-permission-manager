@@ -279,15 +279,23 @@ public class UserController {
      * @return 是否成功
      */
     @GetMapping("/logout")
-    public AjaxResult logout(HttpServletResponse response) {
+    public AjaxResult logout(HttpServletRequest request, HttpServletResponse response) {
         Map map = threadLocalConfig.get();
         Object username = map.get("username");
         // 清除 redis中的缓存
         redisUtils.deleteObject("login:" + username);
         // 删除remember-me cookie
-        Cookie rememberMeCookie = new Cookie("remember-me", "");
-        rememberMeCookie.setMaxAge(0);
-        response.addCookie(rememberMeCookie);
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            String name = cookie.getName();
+            if ("remember-me".equals(name)) {
+                Cookie rememberMeCookie = new Cookie("remember-me", "");
+                rememberMeCookie.setMaxAge(0);
+                rememberMeCookie.setPath("/");
+                rememberMeCookie.setDomain("localhost");
+                response.addCookie(rememberMeCookie);
+            }
+        }
         return AjaxResult.success("注销成功");
     }
 
