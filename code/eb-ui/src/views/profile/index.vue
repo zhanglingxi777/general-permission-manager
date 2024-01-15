@@ -13,7 +13,7 @@
                   <i class="el-icon-picture-outline"></i>
                   头像
                 </template>
-                <avatar-upload ref="avatarUpload" :avatar="userForm.avatar" @avatarUploadRes="getAvatarUploadRes"/>
+                <avatar-upload ref="avatarUpload" :avatar="userForm.avatar" :username="userForm.username" @avatarUploadRes="getAvatarUploadRes"/>
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
