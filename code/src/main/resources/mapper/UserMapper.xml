@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.zhouyang.admin.mapper.UserMapper">
+<mapper namespace="top.zhanglingxi.admin.mapper.UserMapper">
 
-    <resultMap type="top.zhouyang.admin.domain.User" id="EbSysUserResult">
+    <resultMap type="top.zhanglingxi.admin.domain.User" id="EbSysUserResult">
         <result property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
@@ -39,7 +39,7 @@
         from tb_user
     </sql>
 
-    <select id="selectUserList" parameterType="top.zhouyang.admin.domain.User" resultMap="EbSysUserResult">
+    <select id="selectUserList" parameterType="top.zhanglingxi.admin.domain.User" resultMap="EbSysUserResult">
         <include refid="selectEbSysUserVo"/>
         <where>
             <if test="username != null  and username != ''">and username like concat('%', #{username}, '%')</if>
@@ -59,7 +59,7 @@
         where username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="top.zhouyang.admin.domain.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertUser" parameterType="top.zhanglingxi.admin.domain.User" useGeneratedKeys="true" keyProperty="id">
         insert into tb_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="username != null and username != ''">username,</if>
@@ -92,7 +92,7 @@
         </trim>
     </insert>
 
-    <update id="updateUser" parameterType="top.zhouyang.admin.domain.User">
+    <update id="updateUser" parameterType="top.zhanglingxi.admin.domain.User">
         update tb_user
         <trim prefix="SET" suffixOverrides=",">
             <if test="username != null and username != ''">username = #{username},</if>

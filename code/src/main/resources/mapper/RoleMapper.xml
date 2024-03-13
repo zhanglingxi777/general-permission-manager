@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.zhouyang.admin.mapper.RoleMapper">
+<mapper namespace="top.zhanglingxi.admin.mapper.RoleMapper">
 
-    <resultMap type="top.zhouyang.admin.domain.Role" id="EbSysRoleResult">
+    <resultMap type="top.zhanglingxi.admin.domain.Role" id="EbSysRoleResult">
         <result property="id" column="id"/>
         <result property="roleCode" column="role_code"/>
         <result property="roleName" column="role_name"/>
@@ -25,7 +25,7 @@
         from tb_role
     </sql>
 
-    <select id="selectRoleList" parameterType="top.zhouyang.admin.domain.Role" resultMap="EbSysRoleResult">
+    <select id="selectRoleList" parameterType="top.zhanglingxi.admin.domain.Role" resultMap="EbSysRoleResult">
         <include refid="selectEbSysRoleVo"/>
         <where>
             <if test="roleCode != null  and roleCode != ''">and role_code like concat('%', #{roleCode}, '%')</if>
@@ -38,7 +38,7 @@
         where id = #{id}
     </select>
 
-    <insert id="insertRole" parameterType="top.zhouyang.admin.domain.Role" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertRole" parameterType="top.zhanglingxi.admin.domain.Role" useGeneratedKeys="true" keyProperty="id">
         insert into tb_role
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="roleCode != null and roleCode != ''">role_code,</if>
@@ -58,7 +58,7 @@
         </trim>
     </insert>
 
-    <update id="updateRole" parameterType="top.zhouyang.admin.domain.Role">
+    <update id="updateRole" parameterType="top.zhanglingxi.admin.domain.Role">
         update tb_role
         <trim prefix="SET" suffixOverrides=",">
             <if test="roleCode != null and roleCode != ''">role_code = #{roleCode},</if>

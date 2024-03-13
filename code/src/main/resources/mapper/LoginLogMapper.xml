@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.zhouyang.admin.mapper.LoginLogMapper">
+<mapper namespace="top.zhanglingxi.admin.mapper.LoginLogMapper">
 
-    <resultMap type="top.zhouyang.admin.domain.LoginLog" id="EbSysLoginLogResult">
+    <resultMap type="top.zhanglingxi.admin.domain.LoginLog" id="EbSysLoginLogResult">
         <result property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="loginTime" column="login_time"/>
@@ -17,7 +17,7 @@
         from tb_login_log
     </sql>
 
-    <select id="selectLoginLogById" parameterType="top.zhouyang.admin.domain.LoginLog" resultMap="EbSysLoginLogResult">
+    <select id="selectLoginLogById" parameterType="top.zhanglingxi.admin.domain.LoginLog" resultMap="EbSysLoginLogResult">
         <include refid="selectEbSysLoginLogVo"/>
         <where>
             <if test="username != null  and username != ''">and username = #{username}</if>
@@ -33,7 +33,7 @@
         where id = #{id}
     </select>
 
-    <insert id="insertLoginLog" parameterType="top.zhouyang.admin.domain.LoginLog" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertLoginLog" parameterType="top.zhanglingxi.admin.domain.LoginLog" useGeneratedKeys="true" keyProperty="id">
         insert into tb_login_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="username != null">username,</if>
@@ -49,7 +49,7 @@
         </trim>
     </insert>
 
-    <update id="updateLoginLog" parameterType="top.zhouyang.admin.domain.LoginLog">
+    <update id="updateLoginLog" parameterType="top.zhanglingxi.admin.domain.LoginLog">
         update tb_login_log
         <trim prefix="SET" suffixOverrides=",">
             <if test="username != null">username = #{username},</if>
