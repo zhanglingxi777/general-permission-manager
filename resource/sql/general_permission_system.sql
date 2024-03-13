@@ -14,15 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
-SET @@SESSION.SQL_LOG_BIN= 0;
-
---
--- GTID state at the beginning of the backup 
---
-
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'da2daa9c-a9cf-11ee-a112-00163e1c718d:1-38709';
-
 --
 -- Table structure for table `persistent_logins`
 --
@@ -178,7 +169,7 @@ CREATE TABLE `tb_user` (
 
 LOCK TABLES `tb_user` WRITE;
 /*!40000 ALTER TABLE `tb_user` DISABLE KEYS */;
-INSERT INTO `tb_user` VALUES (1,'admin','r/u1Ax0arcfEgk1Y7LahUA==','12345678901','admin@qq.com','/avatar/admin.jpg','管理员','男','2024-01-10 05:00:00','2024-01-13 00:07:21',0,'2024-01-13 14:09:06','2024-01-14 19:56:43','1');
+INSERT INTO `tb_user` VALUES (1,'admin','vN9dRiKTQ9N+lPFrjZ4InQ==','12345678901','admin@qq.com','/avatar/admin.jpg','管理员','男','2024-01-10 05:00:00','2024-01-13 00:07:21',0,'2024-01-13 14:09:06','2024-01-14 19:56:43','1');
 /*!40000 ALTER TABLE `tb_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
