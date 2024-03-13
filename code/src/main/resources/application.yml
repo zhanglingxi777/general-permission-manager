@@ -35,9 +35,9 @@ spring:
 
   # 数据库配置
   datasource:
-    url: "jdbc:mysql://rm-bp1j8u5tpt83g853v6o.rwlb.rds.aliyuncs.com:3306/general_permission_system?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
-    username: "ebao"
-    password: "n5fCjUJGqzSEMiv3DivpH"
+    url: "jdbc:mysql://127.0.0.1:3306/lingxi-basic?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+    username: "root"
+    password: "123456"
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   # redis 配置
