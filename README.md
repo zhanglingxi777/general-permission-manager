@@ -45,3 +45,21 @@ npm run dev
 - 登录日志
 - 登录用户
 ```
+
+### 用户管理页面
+![用户管理页面](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png)
+
+### 角色管理页面
++ 页面
+![角色管理页面](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86.png)
++ 给角色分配权限
+![输入图片说明](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86-%E5%88%86%E9%85%8D%E6%9D%83%E9%99%90.png)
+
+### 菜单管理
+![菜单管理](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E8%8F%9C%E5%8D%95%E7%AE%A1%E7%90%86.png)
+
+### 登录日志
+![登录日志](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E7%99%BB%E5%BD%95%E6%97%A5%E5%BF%97.png)
+
+### 登录用户
+![登录用户](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7.png)
