@@ -8,8 +8,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +24,7 @@ import java.util.List;
  */
 @Data
 @TableName("tb_user")
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -84,11 +87,6 @@ public class User implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date updateTime;
 
-    /**
-     * 查询用户权限列表
-     */
-    @TableField(exist = false)
-    private List<Permission> permissionList;
 
     /**
      * 登录错误次数
@@ -104,4 +102,36 @@ public class User implements Serializable {
      * 最后一次登录时间
      */
     private Date lastLoginTime;
+
+    /**
+     * 用户权限列表
+     */
+    @TableField(exist = false)
+    private List<Permission> permissionList;
+
+    /**
+     * 权限列表
+     */
+    @TableField(exist = false)
+    private Collection<? extends GrantedAuthority> authorities;
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

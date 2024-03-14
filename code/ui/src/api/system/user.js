@@ -15,7 +15,7 @@ export function getVcImage() {
  */
 export function login(data) {
   return request({
-    url: '/sys/user/login',
+    url: '/login',
     method: 'post',
     data
   })
