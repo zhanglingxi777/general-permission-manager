@@ -2,50 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10">
       <el-col :span="8">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>用户信息</span>
-          </div>
-          <div class="text item">
-            <el-descriptions class="margin-top" :column="1" border>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-picture-outline"></i>
-                  头像
-                </template>
-                <avatar-upload ref="avatarUpload" :avatar="userForm.avatar" :username="userForm.username" @avatarUploadRes="getAvatarUploadRes"/>
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-user"></i>
-                  用户名
-                </template>
-                {{ userForm.username }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-mobile"></i>
-                  手机号码
-                </template>
-                {{ userForm.phone }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-message"></i>
-                  邮箱
-                </template>
-                {{ userForm.email }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-date"></i>
-                  创建时间
-                </template>
-                {{ userForm.createTime }}
-              </el-descriptions-item>
-            </el-descriptions>
-          </div>
-        </el-card>
+        <UserCard :user-info="userForm"/>
       </el-col>
 
       <el-col :span="16">
@@ -54,7 +11,7 @@
             <span>基本资料</span>
           </div>
           <div class="text item">
-            <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tabs v-model="activeName">
               <el-tab-pane label="基本资料" name="baseInfo">
                 <el-form :model="userForm" :rules="userRules" ref="userForm" label-width="100px">
                   <el-form-item label="用户姓名" prop="realName">
@@ -95,10 +52,11 @@ import {getUserInfo, updateUser} from "@/api/system/user";
 import {getToken} from "@/utils/auth";
 import AvatarUpload from "@/components/AvatarUpload/index.vue";
 import ResetPwd from "@/views/system/user/resetPwd.vue";
+import UserCard from "@/views/profile/userCard.vue";
 
 export default {
   name: 'Profile',
-  components: {ResetPwd, AvatarUpload},
+  components: {UserCard, ResetPwd, AvatarUpload},
   data() {
     return {
       baseUrl: process.env.VUE_APP_BASE_API,
@@ -126,31 +84,14 @@ export default {
     ])
   },
   created() {
-    this.getUser()
+    if (this.userId) {
+      getUserInfo(this.userId).then(response => {
+        this.userForm = response.data
+      })
+    }
   },
   methods: {
     getToken,
-    getUser() {
-      if (this.userId) {
-        getUserInfo(this.userId).then(response => {
-          this.userForm = response.data
-        })
-      }
-    },
-    handleClick(tab, event) {
-    },
-    getAvatarUploadRes(val) {
-      // 更新用户头像数据
-      let data = {
-        id: this.userForm.id,
-        avatar: val.data
-      }
-      updateUser(data).then(response => {
-        this.$message.success("上传成功!")
-        // 强制更新头像上传组件 刷新图片
-        this.$refs.avatarUpload.$forceUpdate()
-      })
-    },
     handleUpdateUser() {
       let data = {
         id: this.userForm.id,
