@@ -5,7 +5,6 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import {getCookie, getToken, setToken} from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import {autoLogin} from "@/api/system/user";
 
 NProgress.configure({showSpinner: false}) // NProgress Configuration
 
@@ -19,7 +18,6 @@ router.beforeEach(async (to, from, next) => {
   // determine whether the user has logged in
   const hasToken = getToken()
 
-  console.log('1. hasToken', hasToken)
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -53,20 +51,6 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-    console.log('2. has no token')
-    // 1.检查是否有remember-me cookie
-    let rememberMeCookie = getCookie('remember-me')
-    if (rememberMeCookie) {
-      console.log('5. has remember-me cookie, auto login')
-      // 调用自动登录
-      await store.dispatch('user/autoLogin')
-      const {roles} = await store.dispatch('user/getInfo')
-      const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-      router.addRoutes(accessRoutes)
-      next({...to, replace: true})
-    }
-
-    // 2.没有remember-me cookie，检查是否在白名单
     let pass = false
     whiteList.forEach(white => {
       if (white.test(to.path)) {
@@ -75,11 +59,9 @@ router.beforeEach(async (to, from, next) => {
     })
 
     if (pass) {
-      console.log('3. in the free login whitelist, go directly')
       // in the free login whitelist, go directly
       next()
     } else {
-      console.log('7. other pages that do not have permission to access are redirected to the login page.')
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
       NProgress.done()

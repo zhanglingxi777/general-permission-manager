@@ -29,7 +29,6 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import Profile from "@/views/profile/index.vue";
 import UserCard from "@/views/profile/userCard.vue";
 import {getUserInfo} from "@/api/system/user";
 
@@ -68,5 +67,11 @@ export default {
   margin: 10px 0;
   font-weight: bold;
   font-size: 18px;
+}
+
+.password-icon {
+  width: 50px;
+  height: 50px;
+  color: black;
 }
 </style>

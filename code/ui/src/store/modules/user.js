@@ -1,4 +1,4 @@
-import {login, logout, getInfo, autoLogin} from '@/api/system/user'
+import {login, logout, getInfo} from '@/api/system/user'
 import {getToken, setToken, removeToken} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
 
@@ -37,21 +37,7 @@ const actions = {
     const {username, password, verifyCode, uuid, rememberMe} = userInfo
     return new Promise((resolve, reject) => {
       login({username: username.trim(), password: password, verifyCode: verifyCode, uuid: uuid,
-        rememberMe: rememberMe}).then(response => {
-        const {token} = response
-        commit('SET_TOKEN', token)
-        setToken(token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // auto login
-  autoLogin({commit}) {
-    return new Promise((resolve, reject) => {
-      autoLogin().then(response => {
+        'remember-me': rememberMe}).then(response => {
         const {token} = response
         commit('SET_TOKEN', token)
         setToken(token)

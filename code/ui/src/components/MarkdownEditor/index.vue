@@ -7,7 +7,7 @@
 import 'codemirror/lib/codemirror.css' // codemirror
 import 'tui-editor/dist/tui-editor.css' // editor ui
 import 'tui-editor/dist/tui-editor-contents.css' // editor content
-
+// import "@toast-ui/editor/dist/i18n/zh-cn" // 导入中文包
 import Editor from 'tui-editor'
 import defaultOptions from './default-options'
 
@@ -43,7 +43,7 @@ export default {
     language: {
       type: String,
       required: false,
-      default: 'en_US' // https://github.com/nhnent/tui.editor/tree/master/src/js/langs
+      default: 'zh-CN' // https://github.com/nhnent/tui.editor/tree/master/src/js/langs
     }
   },
   data() {

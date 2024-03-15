@@ -33,8 +33,8 @@
           <el-table v-loading="loading" :data="userList" border style="width: 100%">
             <el-table-column label="头像" align="center" prop="avatar" show-overflow-tooltip min-width="120">
               <template slot-scope="scope">
-                <el-image v-if="scope.row.avatar" style="width: 80px;border-radius: 100px;"
-                          :src="baseUrl + '/common/file' + scope.row.avatar + '?date=' + Date.now()"/>
+                <el-avatar v-if="scope.row.avatar" shape="square"
+                           :src="baseUrl + '/common/file' + scope.row.avatar + '?date=' + Date.now()"></el-avatar>
               </template>
             </el-table-column>
             <el-table-column label="用户名" align="center" prop="username" show-overflow-tooltip min-width="120"/>
@@ -478,6 +478,6 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 
 </style>
