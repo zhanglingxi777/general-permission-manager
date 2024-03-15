@@ -3,7 +3,6 @@ package top.zhanglingxi.admin.controller;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
-import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.jwt.JWT;
@@ -14,10 +13,13 @@ import com.alibaba.excel.read.listener.PageReadListener;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.zhanglingxi.admin.domain.*;
@@ -29,11 +31,8 @@ import top.zhanglingxi.common.domain.AjaxResult;
 import top.zhanglingxi.common.utils.DateUtils;
 import top.zhanglingxi.common.utils.RedisUtils;
 import top.zhanglingxi.common.utils.StringUtils;
-import top.zhanglingxi.framework.config.ThreadLocalConfig;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +48,15 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/sys/user")
+@Tag(name = "UserController", description = "用户管理")
 public class UserController {
+    @Value("${custom.aes.key}")
+    private String aesKey;
+    @Value("${user.password.maxRetryCount}")
+    private Integer retryCount;
+    @Value("${user.password.lockTime}")
+    private Integer lockTime;
+
     @Autowired
     private IUserService userService;
     @Autowired
@@ -60,20 +67,6 @@ public class UserController {
     private IPermissionService permissionService;
     @Autowired
     private IMenuTree menuTree;
-    @Autowired
-    private RedisUtils redisUtils;
-    @Autowired
-    private ThreadLocalConfig threadLocalConfig;
-    @Autowired
-    private IPersistentLoginsService persistentLoginsService;
-    @Value("${custom.aes.key}")
-    private String aesKey;
-    @Value("${custom.jwt.key}")
-    private String key;
-    @Value("${user.password.maxRetryCount}")
-    private Integer retryCount;
-    @Value("${user.password.lockTime}")
-    private Integer lockTime;
 
     /**
      * 获取菜单列表
@@ -81,10 +74,11 @@ public class UserController {
      * @return 菜单列表
      */
     @GetMapping("/getMenuList")
+    @Operation(description = "获取菜单列表")
     public AjaxResult getMenuList() {
-        Map map = threadLocalConfig.get();
-        Object username = map.get("username");
-        User user = userService.selectUserByUsername(username.toString());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loginUser = (User) authentication.getPrincipal();
+        User user = userService.selectUserByUsername(loginUser.getUsername());
         List<Long> roleIds = roleService.selectRoleIdsByUserId(user.getId());
         List<Permission> permissionList = permissionService.selectPermissionListByRoleIds(roleIds);
         List<Permission> collect = permissionList.stream()
@@ -112,57 +106,16 @@ public class UserController {
     }
 
     /**
-     * 刷新token
-     *
-     * @return 新的token
-     */
-    @GetMapping("/refreshToken")
-    public AjaxResult refreshToken() {
-        Map map = threadLocalConfig.get();
-        Object username = map.get("username");
-        JWTSigner jwtSigner = JWTSignerUtil.hs256(key.getBytes());
-        Date nowDate = DateUtils.getNowDate();
-        Date expireDate = DateUtils.addMinutes(nowDate, 30);
-        String token = JWT.create()
-                .setExpiresAt(expireDate)
-                .setPayload("username", username)
-                .setSigner(jwtSigner)
-                .sign();
-        redisUtils.deleteObject("login:" + username);
-        redisUtils.setCacheObject("login:" + username, token, 30, TimeUnit.MINUTES);
-        TokenVO tokenVO = new TokenVO(expireDate.getTime(), token);
-        return AjaxResult.success("token刷新成功", tokenVO);
-    }
-
-    /**
-     * 获取验证码
-     *
-     * @return 验证码
-     */
-    @GetMapping("/vcImage")
-    public AjaxResult image() {
-        UUID uuid = UUID.randomUUID();
-        LineCaptcha captcha = CaptchaUtil.createLineCaptcha(250, 80, 4, 10);
-        captcha.setGenerator(new RandomGenerator("0123456789", 4));
-        captcha.createCode();
-        String code = captcha.getCode();
-        redisUtils.setCacheObject("image-code:" + uuid, code, 5, TimeUnit.MINUTES);
-        Map<String, Object> data = new HashMap<>();
-        data.put("uuid", uuid);
-        data.put("image", captcha.getImageBase64Data());
-        return AjaxResult.success(data);
-    }
-
-    /**
      * 获取当前登录用户VO信息
      *
      * @return 当前登录用户VO信息
      */
     @GetMapping("/getInfo")
     public AjaxResult getInfo() {
-        Map map = threadLocalConfig.get();
-        Object username = map.get("username");
-        User user = userService.selectUserByUsername(username.toString());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loginUser = (User) authentication.getPrincipal();
+        String username = loginUser.getUsername();
+        User user = userService.selectUserByUsername(username);
         List<Long> roleIds = roleService.selectRoleIdsByUserId(user.getId());
         List<Permission> permissionList = permissionService.selectPermissionListByRoleIds(roleIds);
         Object[] roles = permissionList.stream().filter(Objects::nonNull).map(Permission::getCode).toArray();
@@ -267,44 +220,6 @@ public class UserController {
         } catch (Exception e) {
             return AjaxResult.error("修改密码失败！");
         }
-    }
-
-    /**
-     * 获取登录用户信息列表
-     *
-     * @return 登录用户信息列表
-     */
-    @GetMapping("/login")
-    public AjaxResult loginUser() {
-        Collection<String> keys = redisUtils.keys("login:" + "*");
-        List<LoginUserInfoVO> loginUserList = new ArrayList<>();
-        keys.forEach(key -> {
-            String[] split = key.split(":");
-            int length = split.length;
-            String username = split[length - 1];
-            User user = userService.selectUserByUsername(username);
-            Date lastLoginTime = user.getLastLoginTime();
-            LoginUserInfoVO loginUser = new LoginUserInfoVO(username, lastLoginTime);
-            loginUserList.add(loginUser);
-        });
-        return AjaxResult.success(loginUserList);
-    }
-
-    /**
-     * 强制注销登录
-     *
-     * @param username 用户名
-     * @return 是否成功
-     */
-    @GetMapping("/force/{username}")
-    public AjaxResult forceLogout(@PathVariable String username) {
-        if ("admin".equals(username)) {
-            return AjaxResult.error("不允许注销超级管理员！");
-        }
-        if (redisUtils.deleteObject("login:" + username)) {
-            return AjaxResult.success("注销成功");
-        }
-        return AjaxResult.error("注销失败！");
     }
 
     /**

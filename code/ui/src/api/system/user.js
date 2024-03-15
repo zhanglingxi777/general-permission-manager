@@ -1,27 +1,6 @@
 import request from '@/utils/request'
 
 /**
- * 获取验证码
- */
-export function getVcImage() {
-  return request({
-    url: '/sys/user/vcImage',
-    method: 'get'
-  });
-}
-
-/**
- * 登录
- */
-export function login(data) {
-  return request({
-    url: '/login',
-    method: 'post',
-    data
-  })
-}
-
-/**
  * 获取登录用户信息
  */
 export function getInfo() {
@@ -32,32 +11,11 @@ export function getInfo() {
 }
 
 /**
- * 注销
- */
-export function logout() {
-  return request({
-    url: '/logout',
-    method: 'get'
-  })
-}
-
-/**
  * 获取菜单数据
  */
 export function getMenuList() {
   return request({
     url: '/sys/user/getMenuList',
-    method: 'get'
-  })
-}
-
-/**
- * 刷新token
- * @returns {AxiosPromise}
- */
-export function refreshToken() {
-  return request({
-    url: '/sys/user/refreshToken',
     method: 'get'
   })
 }
@@ -172,28 +130,5 @@ export function resetPwd(data) {
     url: '/sys/user/pwd',
     method: 'put',
     data
-  })
-}
-
-/**
- * 获取登录用户信息
- * @returns {*}
- */
-export function listLoginUser() {
-  return request({
-    url: '/sys/user/login',
-    method: 'get'
-  })
-}
-
-/**
- * 注销用户
- * @param username
- * @returns {*}
- */
-export function forceLogout(username) {
-  return request({
-    url: '/sys/user/force/' + username,
-    method: 'get'
   })
 }

@@ -10,6 +10,15 @@ custom:
   # 文件路径
   profile: "D:/uploadPath/"
 
+# open api配置
+springdoc:
+  packages-to-scan: top.zhanglingxi.*.controller
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+
+
 server:
   # 设置端口号
   port: 8081

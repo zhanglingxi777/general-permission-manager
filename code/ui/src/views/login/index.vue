@@ -76,7 +76,7 @@
 <script>
 import SocialSign from './components/SocialSignin'
 import {encrypt} from '@/utils/aes'
-import {getVcImage} from "@/api/system/user";
+import {getVcImage} from "@/api/system/login";
 
 export default {
   name: 'Login',

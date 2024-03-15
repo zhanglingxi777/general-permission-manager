@@ -88,9 +88,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 // 登录接口 和 获取验证码接口 设置为匿名登录
-                .mvcMatchers("/sys/user/login", "sys/user/vcImage").anonymous()
+                .antMatchers("/login", "/login/vcImage").anonymous()
                 // 以 public 开头的接口为公开接口 设置为允许所有人访问
-                .mvcMatchers("/public", "/common", "/error").permitAll()
+                .mvcMatchers("/common", "/error", "/doc.html").permitAll()
                 .regexMatchers(".*/avatar/.*").permitAll()
                 // 其他请求需要验证
                 .anyRequest().authenticated()
