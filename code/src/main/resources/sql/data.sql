@@ -25,64 +25,35 @@ INSERT INTO tb_permission (id, label, parent_id, parent_name, code, `path`, name
 INSERT INTO tb_permission (id, label, parent_id, parent_name, code, `path`, name, url, `type`, icon, create_time, update_time, remark, order_num) VALUES(260, '查询菜单', 103, '菜单管理', 'system:menu:query', NULL, NULL, NULL, 2, NULL, '2024-01-11 00:00:00', '2024-01-11 11:18:33', NULL, 4);
 
 -- tb_user
-INSERT INTO tb_user (id, username, password, phone, email, avatar, real_name, gender, create_time, update_time, login_error_num, login_limit_time, last_login_time, is_admin) VALUES(1, 'admin', 'vN9dRiKTQ9N+lPFrjZ4InQ==', '12345678901', 'admin@qq.com', '/avatar/admin.jpg', '管理员', '男', '2024-01-10 05:00:00', '2024-01-10 23:03:19', 0, NULL, '2024-01-11 09:51:26', '1');
+INSERT INTO tb_user (id, username, password, phone, email, avatar, real_name, gender, create_time, update_time, login_error_num, login_limit_time, last_login_time, is_admin) VALUES(1, 'admin', '$2a$10$eyVkFt110CHnf8xhvDpKvO.95Yfz5Ra5qvvRfr4Tj6S9vbJtx7k/S', '12345678901', 'admin@qq.com', '/avatar/admin.jpg', '管理员', '男', '2024-01-10 05:00:00', '2024-03-26 21:07:26', 1, NULL, '2024-03-26 21:07:26', '1');
 
 -- tb_role
-INSERT INTO tb_role (id, role_code, role_name, create_user, create_time, update_time, remark) VALUES(1, 'ROLE_ADMIN', '超级管理员', 1, '2023-12-14 00:00:00', '2024-01-11 09:54:30', NULL);
+INSERT INTO tb_role (id, role_code, role_name, create_user, create_time, update_time, remark) VALUES(1, 'ROLE_ADMIN', '超级管理员', 1, '2023-12-14 00:00:00', '2024-01-12 13:16:49', '请不要删除超级管理员！');
 
 -- tb_role_permission
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(298, 1, 1);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(299, 1, 100);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(300, 1, 201);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(301, 1, 202);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(302, 1, 203);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(303, 1, 229);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(304, 1, 101);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(305, 1, 204);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(306, 1, 205);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(307, 1, 206);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(308, 1, 102);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(309, 1, 207);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(310, 1, 208);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(311, 1, 209);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(312, 1, 103);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(313, 1, 210);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(314, 1, 211);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(315, 1, 212);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(316, 1, 251);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(317, 1, 252);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(318, 1, 253);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(319, 1, 254);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(320, 1, 255);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(321, 1, 256);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(322, 1, 257);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(323, 1, 218);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(324, 1, 219);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(325, 1, 230);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(326, 1, 231);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(327, 1, 232);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(328, 1, 233);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(329, 1, 225);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(330, 1, 234);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(331, 1, 235);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(332, 1, 236);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(333, 1, 237);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(334, 1, 226);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(335, 1, 227);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(336, 1, 238);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(337, 1, 239);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(338, 1, 240);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(339, 1, 241);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(340, 1, 228);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(341, 1, 243);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(342, 1, 244);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(343, 1, 245);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(344, 1, 246);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(345, 1, 242);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(346, 1, 247);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(347, 1, 248);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(348, 1, 249);
-INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(349, 1, 250);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(371, 1, 1);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(372, 1, 101);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(373, 1, 204);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(374, 1, 205);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(375, 1, 206);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(376, 1, 258);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(377, 1, 102);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(378, 1, 207);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(379, 1, 208);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(380, 1, 209);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(381, 1, 259);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(382, 1, 103);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(383, 1, 210);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(384, 1, 211);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(385, 1, 212);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(386, 1, 260);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(387, 1, 251);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(388, 1, 252);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(389, 1, 253);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(390, 1, 254);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(391, 1, 255);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(392, 1, 256);
+INSERT INTO tb_role_permission (id, role_id, permission_id) VALUES(393, 1, 257);
 
 -- tb_user_role
 INSERT INTO tb_user_role (id, user_id, role_id) VALUES(1, 1, 1);
