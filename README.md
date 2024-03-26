@@ -52,6 +52,10 @@ npm run dev
 # 后端
 ## 使用idea打开code文件夹，配置Maven，等待项目构建完毕
 
+# 数据库
+## 新建lingxi-basic数据库
+## 在数据库中先执行sql文件夹中的ddl.sql，再执行data.sql
+
 # admin账号
 ## 用户名:admin
 ## 密码:123456
