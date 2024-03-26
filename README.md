@@ -74,6 +74,9 @@ npm run dev
 - 登录用户
     - 查看在线用户，管理员可以强制用户退出
 
+### 个人中心页面
+![个人中心页面](resource/image/%E4%B8%AA%E4%BA%BA%E4%B8%AD%E5%BF%83.png)
+
 ### 用户管理页面
 ![用户管理页面](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png)
 
