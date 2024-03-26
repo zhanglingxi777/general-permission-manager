@@ -30,6 +30,7 @@ cd code/ui
 
 ## 安装依赖
 npm install
+安装依赖报错，请查看(https://gitee.com/zhanglingxi777/general-permission-manager/issues/I98AYH#git-comment-divider)
 
 ## 本地开发 启动项目
 npm run dev
@@ -68,6 +69,13 @@ npm run dev
 
 ### 登录用户
 ![登录用户](resource/image/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86-%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7.png)
+
+### 默认账号
+
+```
+用户名:admin
+密码:123456
+```
 
 ## 结语
 本项目实现了最基础的RBAC功能，如果本项目对大家有参考价值，还请麻烦大家点下⭐Star⭐，这对我以后找工作有很大帮助（25届毕业），谢谢大家。
