@@ -17,7 +17,9 @@
   </div>
 </template>
 <script>
-import {forceLogout, listLoginUser} from "@/api/system/user";
+
+
+import {forceLogout, listLoginUser} from "@/api/system/login";
 
 export default {
   name: 'LoginUser',
