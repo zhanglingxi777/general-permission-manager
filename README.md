@@ -1,5 +1,17 @@
 # 灵溪通用权限管理系统
-灵溪通用权限管理系统，基于springboot+vue技术栈，实现了基础的RBAC
+灵溪通用权限管理系统，基于springboot+vue开发，实现了基础的RBAC
+
+## 技术栈
+
+### 前端
+1. Vue
+2. Element-ui
+
+### 后端
+1. Spring Boot
+2. Spring MVC
+3. Spring Security
+4. MySQL
 
 ## 目录结构
 
