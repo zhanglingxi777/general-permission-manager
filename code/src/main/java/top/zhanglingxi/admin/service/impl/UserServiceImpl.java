@@ -1,10 +1,14 @@
 package top.zhanglingxi.admin.service.impl;
 
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.AES;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.zhanglingxi.admin.domain.User;
@@ -165,12 +169,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean resetPwd(Long userId, String oldPwd, String newPwd) {
         User user = getById(userId);
-        if (oldPwd.equals(user.getPassword())) {
+
+        // 解密密码
+        AES aes = SecureUtil.aes(aesKey.getBytes());
+        oldPwd = aes.decryptStr(oldPwd);
+        newPwd = aes.decryptStr(newPwd);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (passwordEncoder.matches(oldPwd, user.getPassword())) {
             // oldPwd正确 更新用户密码
             if (oldPwd.equals(newPwd)) {
                 throw new IllegalArgumentException("新密码与原密码相同，请输入不同的密码！");
             }
-            user.setPassword(newPwd);
+
+            user.setPassword(passwordEncoder.encode(newPwd));
             return updateById(user);
         }
         throw new IllegalArgumentException("原密码不正确，请重新输入！");

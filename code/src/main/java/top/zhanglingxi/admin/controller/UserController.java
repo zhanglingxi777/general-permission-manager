@@ -1,20 +1,12 @@
 package top.zhanglingxi.admin.controller;
 
-import cn.hutool.captcha.CaptchaUtil;
-import cn.hutool.captcha.LineCaptcha;
-import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.signers.JWTSigner;
-import cn.hutool.jwt.signers.JWTSignerUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +40,6 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/sys/user")
-@Tag(name = "UserController", description = "用户管理")
 public class UserController {
     @Value("${custom.aes.key}")
     private String aesKey;
@@ -74,7 +65,6 @@ public class UserController {
      * @return 菜单列表
      */
     @GetMapping("/getMenuList")
-    @Operation(description = "获取菜单列表")
     public AjaxResult getMenuList() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User loginUser = (User) authentication.getPrincipal();

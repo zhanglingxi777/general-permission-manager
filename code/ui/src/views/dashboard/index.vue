@@ -18,7 +18,10 @@
         <span class="update-title">更新日志</span>
 
         <el-collapse accordion>
-          <el-collapse-item title="v1.0" name="1">
+          <el-collapse-item title="v1.1" name="1.1">
+            <div>改造权限认证流程，集成Spring Security安全框架框架</div>
+          </el-collapse-item>
+          <el-collapse-item title="v1.0" name="1.0">
             <div>灵溪通用权限管理系统开发完毕，实现基础的RBAC功能</div>
           </el-collapse-item>
         </el-collapse>
