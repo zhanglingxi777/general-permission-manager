@@ -43,8 +43,8 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import {logout} from "@/api/system/user";
 import {removeToken} from "@/utils/auth";
+import {logout} from "@/api/system/login";
 
 export default {
   components: {
