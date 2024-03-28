@@ -16,6 +16,10 @@ import top.zhanglingxi.common.utils.DateUtils;
 
 import java.util.Objects;
 
+/**
+ * 登录日志切面
+ * @author Zhang Lingxi
+ */
 @Aspect
 @Component
 @Slf4j

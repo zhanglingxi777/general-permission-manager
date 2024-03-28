@@ -63,7 +63,7 @@ export default {
     getAvatarUploadRes(val) {
       // 更新用户头像数据
       let data = {
-        id: this.userForm.id,
+        id: this.userInfo.id,
         avatar: val.data
       }
       updateUser(data).then(response => {
