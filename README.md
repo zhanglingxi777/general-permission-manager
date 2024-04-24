@@ -2,7 +2,7 @@
 灵溪通用权限管理系统，基于spring boot，vue和element-ui开发，使用spring security安全框架，实现了基础的RBAC功能
 
 ## 演示地址
-URL: http://120.55.45.37:8081/
+URL: http://120.55.45.37/
 
 账号: admin
 
