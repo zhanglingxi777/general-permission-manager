@@ -1,7 +1,7 @@
 # 灵溪通用权限管理系统
 灵溪通用权限管理系统，基于spring boot，vue和element-ui开发，使用spring security安全框架，实现了基础的RBAC功能。
 
-该项目是本人为完成学校Java Web大作业而开发的基础项目，仅供参考。
+**该项目是本人为完成学校Java Web大作业而开发的基础项目，仅供参考。**
 
 账号: admin
 密码: 123456
