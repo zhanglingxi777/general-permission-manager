@@ -110,6 +110,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new IllegalArgumentException("用户名已存在！");
         }
         // 设置默认值
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // password
+        ebSysUser.setPassword(passwordEncoder.encode("123456"));
         // is_admin
         ebSysUser.setIsAdmin(0);
         // login_error_num
