@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * 用户-角色关系
+ * @author Zhang linxi
  */
 public interface IUserRoleService extends IService<UserRole> {
 

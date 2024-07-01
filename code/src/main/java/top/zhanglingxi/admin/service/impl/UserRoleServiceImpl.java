@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Zhang lingxi
+ */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implements IUserRoleService {
 
     @Override
@@ -21,14 +24,15 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
         // 删除该用户的所有角色列表
         LambdaQueryWrapper<UserRole> urQw = new LambdaQueryWrapper<>();
         urQw.eq(Objects.nonNull(userId), UserRole::getUserId, userId);
-        urQw.in(Objects.nonNull(roleIdList), UserRole::getRoleId, roleIdList);
         if (count(urQw) > 0) {
             if (!remove(urQw)) {
                 return false;
             }
         }
         // 新增用户的角色列表
-        if (!roleIdList.isEmpty()) {
+        if (roleIdList.isEmpty()) {
+            return true;
+        } else {
             ArrayList<UserRole> userRoleList = new ArrayList<>();
             for (Long roleId : roleIdList) {
                 UserRole ebSysUserRole = new UserRole(userId, roleId);
@@ -36,6 +40,5 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
             }
             return saveBatch(userRoleList);
         }
-        return false;
     }
 }
