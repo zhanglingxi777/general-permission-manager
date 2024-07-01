@@ -187,11 +187,15 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public AjaxResult remove(@PathVariable Long id) {
-        int res = userService.deleteUserById(id);
-        if (res > 0) {
-            return AjaxResult.success();
+        try {
+            int res = userService.deleteUserById(id);
+            if (res > 0) {
+                return AjaxResult.success();
+            }
+            return AjaxResult.error();
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
         }
-        return AjaxResult.error();
     }
 
     /**
@@ -208,7 +212,7 @@ public class UserController {
             }
             return AjaxResult.error("修改密码失败！");
         } catch (Exception e) {
-            return AjaxResult.error("修改密码失败！");
+            return AjaxResult.error(e.getMessage());
         }
     }
 
