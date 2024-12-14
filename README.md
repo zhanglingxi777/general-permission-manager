@@ -49,7 +49,6 @@ cd code/ui
 
 ## 安装依赖
 npm install
-安装依赖报错，请查看(https://gitee.com/zhanglingxi777/general-permission-manager/issues/I98AYH#git-comment-divider)
 
 ## 本地开发 启动项目
 npm run dev
